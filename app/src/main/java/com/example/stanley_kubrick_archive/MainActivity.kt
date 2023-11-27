@@ -47,7 +47,6 @@ class MainActivity : ComponentActivity() {
                     Item(2, "Title 2", "Description 2"),
                     Item(2, "Title 2", "Description 2"),
                     Item(2, "Title 2", "Description 2"),
-                    // Add more items as needed
                 )
                 Surface(
                     modifier = Modifier.fillMaxSize().background(color = Color.Black),
@@ -71,7 +70,7 @@ class MainActivity : ComponentActivity() {
 fun ItemCard(item: Item, scale: Float) {
     Card(
         modifier = Modifier
-            .height(130.dp)
+            .height(230.dp)
 
     ) {
         Surface(
@@ -89,7 +88,7 @@ fun ItemCard(item: Item, scale: Float) {
 @Composable
 fun ItemList(items: List<Item>) {
     LazyColumn(
-
+        verticalArrangement = Arrangement.spacedBy((-50).dp),
     ) {
         itemsIndexed(items) { index, item ->
             val scale = 1f - (index * 0.02f).coerceAtMost(0.2f)
