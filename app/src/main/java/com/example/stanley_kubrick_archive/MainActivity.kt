@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun HomeScreen(items: List<Item>) {
-        Scaffold(topBar = { GradientToolbar("hello") }) {
+        Scaffold(topBar = { GradientToolbar("ARCHIVE") }) {
             ItemList(items = items)
         }
     }
@@ -66,13 +66,14 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun GradientToolbar(title: String) {
         val gradient = Brush.verticalGradient(
-            colors = listOf(Color.Blue, Color.Green),
+            colors = listOf(Color.Black, Color.Transparent),
             startY = 0.0f,
             endY = Float.POSITIVE_INFINITY
         )
         TopAppBar(
-            title = { Text(text = title) },
-            modifier = Modifier.background(gradient) // Apply the gradient here
+            title = { Text(text = title, color = Color.White) },
+            modifier = Modifier.background(gradient),
+
         )
     }
 
