@@ -76,13 +76,6 @@ class MainActivity : ComponentActivity() {
 
         )
     }
-
-    @Composable
-    private fun SimpleList() {
-        LazyColumn(content = {
-
-        })
-    }
 }
 
 @Composable
