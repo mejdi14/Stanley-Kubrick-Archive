@@ -40,7 +40,6 @@ class MainActivity : ComponentActivity() {
                     Item(2, "Title 2", "Description 2"),
                     Item(2, "Title 2", "Description 2"),
                     Item(2, "Title 2", "Description 2"),
-                    Item(2, "Title 2", "Description 2"),
                 )
                 Surface(
                     modifier = Modifier
