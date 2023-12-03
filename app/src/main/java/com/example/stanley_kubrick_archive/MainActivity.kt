@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import com.example.stanley_kubrick_archive.data.Item
 import com.example.stanley_kubrick_archive.ui.theme.StanleyKubrickArchiveTheme
@@ -33,13 +34,7 @@ class MainActivity : ComponentActivity() {
             StanleyKubrickArchiveTheme {
                 val items = listOf(
                     Item(1, "Title 1", "Description 1"),
-                    Item(2, "Title 2", "Description 2"),
-                    Item(2, "Title 2", "Description 2"),
-                    Item(2, "Title 2", "Description 2"),
-                    Item(2, "Title 2", "Description 2"),
-                    Item(2, "Title 2", "Description 2"),
-                    Item(2, "Title 2", "Description 2"),
-                    Item(2, "Title 2", "Description 2"),
+
                 )
                 Surface(
                     modifier = Modifier
@@ -82,6 +77,9 @@ fun ItemCard(item: Item, scale: Float) {
     Card(
         modifier = Modifier
             .height(230.dp)
+            .graphicsLayer {
+                rotationX = -30f
+            }
 
     ) {
         Surface(
