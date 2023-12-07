@@ -4,13 +4,15 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -18,10 +20,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.stanley_kubrick_archive.data.Item
 import com.example.stanley_kubrick_archive.ui.theme.StanleyKubrickArchiveTheme
@@ -33,6 +38,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             StanleyKubrickArchiveTheme {
                 val items = listOf(
+                    Item(1, "Title 1", "Description 1"),
+                    Item(1, "Title 1", "Description 1"),
+                    Item(1, "Title 1", "Description 1"),
                     Item(1, "Title 1", "Description 1"),
 
                 )
@@ -73,13 +81,17 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ItemCard(item: Item, scale: Float) {
+fun ItemCard(item: Item, scale: Float, offset: Dp, rotationDegrees: Float) {
     Card(
         modifier = Modifier
-            .height(230.dp)
+            .height(430.dp)
+            .fillMaxWidth()
             .graphicsLayer {
-                rotationX = -30f
+                rotationX = rotationDegrees
+                cameraDistance = 12 * density
+
             }
+
 
     ) {
         Surface(
@@ -87,21 +99,32 @@ fun ItemCard(item: Item, scale: Float) {
             modifier = Modifier
                 .fillMaxSize()
         ){
-            Box {
-
-            }
+            Image(painter = painterResource(id = R.drawable.clockwork), contentDescription = "image" )
         }
     }
 }
 
 @Composable
 fun ItemList(items: List<Item>) {
+    val listState = rememberLazyListState()
+    val scrollOffset = remember { listState.firstVisibleItemScrollOffset }
+
     LazyColumn(
-        verticalArrangement = Arrangement.spacedBy((-50).dp),
+        state = listState,
+        verticalArrangement = Arrangement.spacedBy((-190).dp),
     ) {
         itemsIndexed(items) { index, item ->
             val scale = 1f - (index * 0.02f).coerceAtMost(0.2f)
-            ItemCard(item, scale = scale)
+            val offset = (-100 * index).dp
+            val rotationDegrees = calculateRotation(index, scrollOffset)
+            ItemCard(item, scale = scale, offset, rotationDegrees)
         }
     }
+
+
+}
+fun calculateRotation(index: Int, scrollOffset: Int): Float {
+    // Your logic to calculate rotation based on index and scroll position
+    // Example: increasing rotation with each item and adjusting based on scroll
+    return (index * -30f) - scrollOffset * 0.1f
 }
