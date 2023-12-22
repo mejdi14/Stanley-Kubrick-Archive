@@ -2,6 +2,7 @@ package com.example.stanley_kubrick_archive
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -38,6 +39,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             StanleyKubrickArchiveTheme {
                 val items = listOf(
+                    Item(1, "Title 1", "Description 1"),
+                    Item(1, "Title 1", "Description 1"),
+                    Item(1, "Title 1", "Description 1"),
                     Item(1, "Title 1", "Description 1"),
                     Item(1, "Title 1", "Description 1"),
                     Item(1, "Title 1", "Description 1"),
@@ -81,13 +85,21 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ItemCard(item: Item, scale: Float, offset: Dp, rotationDegrees: Float, index: Int) {
+fun ItemCard(
+    item: Item,
+    scale: Float,
+    offset: Dp,
+    rotationDegrees: Float,
+    index: Int,
+    scrollOffset: Int
+) {
+    Log.d("TAG", "ItemCard: $scrollOffset")
     Card(
         modifier = Modifier
             .height(230.dp)
             .fillMaxWidth()
             .graphicsLayer {
-                rotationX = index * 10f
+                rotationX = index * 20f
 
             }
 
@@ -116,7 +128,7 @@ fun ItemList(items: List<Item>) {
             val scale = 1f - (index * 0.02f).coerceAtMost(0.2f)
             val offset = (-100 * index).dp
             val rotationDegrees = calculateRotation(index, scrollOffset)
-            ItemCard(item, scale = scale, offset, rotationDegrees, index)
+            ItemCard(item, scale = scale, offset, rotationDegrees, index, scrollOffset)
         }
     }
 
@@ -132,10 +144,11 @@ fun SimpleItemList(items: List<Item>) {
         state = listState,
     ) {
         itemsIndexed(items) { index, item ->
+            Log.d("TAG", "SimpleItemList: ${listState.firstVisibleItemScrollOffset}")
             val scale = 1f - (index * 0.02f).coerceAtMost(0.2f)
             val offset = (-50 * index).dp
             val rotationDegrees = calculateRotation(index, scrollOffset)
-            ItemCard(item, scale = scale, offset, rotationDegrees, index)
+            ItemCard(item, scale = scale, offset, rotationDegrees, index, scrollOffset)
         }
     }
 
