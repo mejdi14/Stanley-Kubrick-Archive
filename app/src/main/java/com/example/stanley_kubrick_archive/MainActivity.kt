@@ -61,7 +61,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun HomeScreen(items: List<Item>) {
         Scaffold(topBar = { GradientToolbar("ARCHIVE") }) {
-            ItemList(items = items)
+            SimpleItemList(items = items)
         }
     }
 
@@ -81,14 +81,13 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ItemCard(item: Item, scale: Float, offset: Dp, rotationDegrees: Float) {
+fun ItemCard(item: Item, scale: Float, offset: Dp, rotationDegrees: Float, index: Int) {
     Card(
         modifier = Modifier
-            .height(430.dp)
+            .height(230.dp)
             .fillMaxWidth()
             .graphicsLayer {
-                rotationX = rotationDegrees
-                cameraDistance = 12 * density
+                rotationX = index * 10f
 
             }
 
@@ -117,7 +116,26 @@ fun ItemList(items: List<Item>) {
             val scale = 1f - (index * 0.02f).coerceAtMost(0.2f)
             val offset = (-100 * index).dp
             val rotationDegrees = calculateRotation(index, scrollOffset)
-            ItemCard(item, scale = scale, offset, rotationDegrees)
+            ItemCard(item, scale = scale, offset, rotationDegrees, index)
+        }
+    }
+
+
+}
+
+@Composable
+fun SimpleItemList(items: List<Item>) {
+    val listState = rememberLazyListState()
+    val scrollOffset = remember { listState.firstVisibleItemScrollOffset }
+
+    LazyColumn(
+        state = listState,
+    ) {
+        itemsIndexed(items) { index, item ->
+            val scale = 1f - (index * 0.02f).coerceAtMost(0.2f)
+            val offset = (-50 * index).dp
+            val rotationDegrees = calculateRotation(index, scrollOffset)
+            ItemCard(item, scale = scale, offset, rotationDegrees, index)
         }
     }
 
