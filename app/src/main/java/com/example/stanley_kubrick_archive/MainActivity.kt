@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
@@ -46,7 +47,7 @@ class MainActivity : ComponentActivity() {
                     Item(1, "Title 1", "Description 1"),
                     Item(1, "Title 1", "Description 1"),
                     Item(1, "Title 1", "Description 1"),
-
+                    Item(1, "Title 1", "Description 1"),
                 )
                 Surface(
                     modifier = Modifier
@@ -91,7 +92,8 @@ fun ItemCard(
     offset: Dp,
     rotationDegrees: Float,
     index: Int,
-    scrollOffset: Int
+    scrollOffset: Int,
+    listState: LazyListState
 ) {
     Log.d("TAG", "ItemCard: $scrollOffset")
     Card(
@@ -99,7 +101,7 @@ fun ItemCard(
             .height(230.dp)
             .fillMaxWidth()
             .graphicsLayer {
-                rotationX = index * 20f
+                rotationX = index * 0.2f * (listState.firstVisibleItemScrollOffset )
 
             }
 
@@ -128,7 +130,7 @@ fun ItemList(items: List<Item>) {
             val scale = 1f - (index * 0.02f).coerceAtMost(0.2f)
             val offset = (-100 * index).dp
             val rotationDegrees = calculateRotation(index, scrollOffset)
-            ItemCard(item, scale = scale, offset, rotationDegrees, index, scrollOffset)
+            ItemCard(item, scale = scale, offset, rotationDegrees, index, scrollOffset, listState)
         }
     }
 
@@ -148,7 +150,7 @@ fun SimpleItemList(items: List<Item>) {
             val scale = 1f - (index * 0.02f).coerceAtMost(0.2f)
             val offset = (-50 * index).dp
             val rotationDegrees = calculateRotation(index, scrollOffset)
-            ItemCard(item, scale = scale, offset, rotationDegrees, index, scrollOffset)
+            ItemCard(item, scale = scale, offset, rotationDegrees, index, scrollOffset, listState)
         }
     }
 
