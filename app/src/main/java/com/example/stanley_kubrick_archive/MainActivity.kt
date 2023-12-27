@@ -1,7 +1,9 @@
 package com.example.stanley_kubrick_archive
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -65,7 +67,8 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun HomeScreen(items: List<Item>) {
-        Scaffold(topBar = { GradientToolbar("ARCHIVE") }) {
+        //Scaffold(topBar = { GradientToolbar("ARCHIVE") }) {
+        Scaffold() {
             SimpleItemList(items = items)
         }
     }
@@ -95,13 +98,14 @@ fun ItemCard(
     scrollOffset: Int,
     listState: LazyListState
 ) {
-    Log.d("TAG", "ItemCard: $scrollOffset")
+    Log.d("TAG", "ItemCard: ${listState.firstVisibleItemScrollOffset}")
+    Log.d("TAG", "ItemCard: ${listState.layoutInfo.visibleItemsInfo.size}")
     Card(
         modifier = Modifier
-            .height(230.dp)
+            .height(130.dp)
             .fillMaxWidth()
             .graphicsLayer {
-                rotationX = index * 0.2f * (listState.firstVisibleItemScrollOffset )
+                rotationX = index * 10f + (listState.firstVisibleItemScrollOffset / 100)
 
             }
 
@@ -160,4 +164,11 @@ fun calculateRotation(index: Int, scrollOffset: Int): Float {
     // Your logic to calculate rotation based on index and scroll position
     // Example: increasing rotation with each item and adjusting based on scroll
     return (index * -30f) - scrollOffset * 0.1f
+}
+
+fun getScreenHeightInDp(context: Context): Int {
+    val displayMetrics: DisplayMetrics = context.resources.displayMetrics
+    val screenHeightInPixels = displayMetrics.heightPixels
+    val densityDpi = displayMetrics.densityDpi
+    return (screenHeightInPixels / (densityDpi / 160f)).toInt()
 }
