@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
+import android.util.TypedValue
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -29,11 +31,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.stanley_kubrick_archive.data.Item
 import com.example.stanley_kubrick_archive.ui.theme.StanleyKubrickArchiveTheme
+import kotlinx.coroutines.currentCoroutineContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
@@ -42,6 +46,15 @@ class MainActivity : ComponentActivity() {
         setContent {
             StanleyKubrickArchiveTheme {
                 val items = listOf(
+                    Item(1, "Title 1", "Description 1"),
+                    Item(1, "Title 1", "Description 1"),
+                    Item(1, "Title 1", "Description 1"),
+                    Item(1, "Title 1", "Description 1"),
+                    Item(1, "Title 1", "Description 1"),
+                    Item(1, "Title 1", "Description 1"),
+                    Item(1, "Title 1", "Description 1"),
+                    Item(1, "Title 1", "Description 1"),
+                    Item(1, "Title 1", "Description 1"),
                     Item(1, "Title 1", "Description 1"),
                     Item(1, "Title 1", "Description 1"),
                     Item(1, "Title 1", "Description 1"),
@@ -84,8 +97,12 @@ class MainActivity : ComponentActivity() {
             title = { Text(text = title, color = Color.White) },
             modifier = Modifier.background(gradient),
 
-        )
+            )
     }
+}
+
+fun dpToPx(dp: Float, context: Context): Float {
+    return dp * context.resources.displayMetrics.density
 }
 
 @Composable
@@ -98,14 +115,28 @@ fun ItemCard(
     scrollOffset: Int,
     listState: LazyListState
 ) {
-    Log.d("TAG", "ItemCard: ${listState.firstVisibleItemScrollOffset}")
-    Log.d("TAG", "ItemCard: ${listState.layoutInfo.visibleItemsInfo.size}")
+    Log.d(
+        "TAG",
+        "ItemCard: ${
+            pxToDp(
+                listState.firstVisibleItemScrollOffset.toFloat(),
+                LocalContext.current
+            )
+        }"
+    )
+    val itemHeightPx = dpToPx(230f, LocalContext.current)
+    val dynamicRotation = if (index > listState.firstVisibleItemIndex) {
+        20f * (index - listState.firstVisibleItemIndex) - (listState.firstVisibleItemScrollOffset / itemHeightPx) * 20f
+    } else {
+        0f
+    }
     Card(
         modifier = Modifier
-            .height(130.dp)
+            .height(230.dp)
             .fillMaxWidth()
             .graphicsLayer {
-                rotationX = index * 10f + (listState.firstVisibleItemScrollOffset / 100)
+                rotationX =
+                    -dynamicRotation
 
             }
 
@@ -115,11 +146,24 @@ fun ItemCard(
             color = item.color,
             modifier = Modifier
                 .fillMaxSize()
-        ){
-            Image(painter = painterResource(id = R.drawable.clockwork), contentDescription = "image" )
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.clockwork),
+                contentDescription = "image"
+            )
         }
     }
 }
+
+
+fun pxToDp(px: Float, context: Context): Float {
+    return TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        px,
+        context.resources.displayMetrics
+    )
+}
+
 
 @Composable
 fun ItemList(items: List<Item>) {
@@ -147,7 +191,9 @@ fun SimpleItemList(items: List<Item>) {
     val scrollOffset = remember { listState.firstVisibleItemScrollOffset }
 
     LazyColumn(
+        modifier = Modifier.padding(horizontal = 30.dp),
         state = listState,
+        verticalArrangement = Arrangement.spacedBy((-90).dp),
     ) {
         itemsIndexed(items) { index, item ->
             Log.d("TAG", "SimpleItemList: ${listState.firstVisibleItemScrollOffset}")
@@ -160,6 +206,7 @@ fun SimpleItemList(items: List<Item>) {
 
 
 }
+
 fun calculateRotation(index: Int, scrollOffset: Int): Float {
     // Your logic to calculate rotation based on index and scroll position
     // Example: increasing rotation with each item and adjusting based on scroll
