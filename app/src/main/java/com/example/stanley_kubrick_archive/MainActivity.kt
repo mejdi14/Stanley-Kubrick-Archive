@@ -137,7 +137,6 @@ fun ItemCard(
             .graphicsLayer {
                 rotationX =
                     -dynamicRotation
-
             }
 
 
