@@ -137,6 +137,7 @@ fun ItemCard(
             .graphicsLayer {
                 rotationX =
                     -dynamicRotation
+                cameraDistance = 27f
             }
 
 
