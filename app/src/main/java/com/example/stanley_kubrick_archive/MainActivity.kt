@@ -11,6 +11,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
@@ -64,13 +67,24 @@ class MainActivity : ComponentActivity() {
                     Item(1, "Title 1", "Description 1"),
                     Item(1, "Title 1", "Description 1"),
                 )
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(color = Color.Black),
-                    color = Color.Black
+                Box(
+                    modifier = Modifier.background(color = Color.Black).fillMaxSize()
+
                 ) {
                     HomeScreen(items)
+                    Spacer(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(90.dp) // Set the height of the toolbar
+                            .background(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Black.copy(alpha = 0.7f), // Start color of the gradient
+                                        Color.Transparent // End color of the gradient
+                                    )
+                                )
+                            )
+                    )
                 }
             }
         }
@@ -81,9 +95,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     private fun HomeScreen(items: List<Item>) {
         //Scaffold(topBar = { GradientToolbar("ARCHIVE") }) {
-        Scaffold() {
             SimpleItemList(items = items)
-        }
     }
 
     @Composable
@@ -124,7 +136,7 @@ fun ItemCard(
             )
         }"
     )
-    val itemHeightPx = dpToPx(230f, LocalContext.current)
+    val itemHeightPx = dpToPx(270f, LocalContext.current)
     val dynamicRotation = if (index > listState.firstVisibleItemIndex) {
         20f * (index - listState.firstVisibleItemIndex) - (listState.firstVisibleItemScrollOffset / itemHeightPx) * 20f
     } else {
@@ -132,12 +144,12 @@ fun ItemCard(
     }
     Card(
         modifier = Modifier
-            .height(230.dp)
+            .height(270.dp)
             .fillMaxWidth()
             .graphicsLayer {
                 rotationX =
                     -dynamicRotation
-                cameraDistance = 27f
+                cameraDistance = 33f
             }
 
 
@@ -148,8 +160,11 @@ fun ItemCard(
                 .fillMaxSize()
         ) {
             Image(
+                modifier = Modifier
+                    .fillMaxSize(),
                 painter = painterResource(id = R.drawable.clockwork),
-                contentDescription = "image"
+                contentDescription = "image",
+                contentScale = ContentScale.FillWidth
             )
         }
     }
@@ -193,7 +208,7 @@ fun SimpleItemList(items: List<Item>) {
     LazyColumn(
         modifier = Modifier.padding(horizontal = 30.dp),
         state = listState,
-        verticalArrangement = Arrangement.spacedBy((-90).dp),
+        verticalArrangement = Arrangement.spacedBy((-100).dp),
     ) {
         itemsIndexed(items) { index, item ->
             Log.d("TAG", "SimpleItemList: ${listState.firstVisibleItemScrollOffset}")
