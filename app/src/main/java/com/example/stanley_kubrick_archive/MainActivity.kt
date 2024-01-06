@@ -62,14 +62,15 @@ class MainActivity : ComponentActivity() {
                     Item(1, "Title 1", "Description 1", image= R.drawable.glory),
                     Item(1, "Title 1", "Description 1", image= R.drawable.shining),
                     Item(1, "Title 1", "Description 1", image= R.drawable.barry_lyndon),
-                    Item(1, "Title 1", "Description 1", image= R.drawable.space_odyssey),
-                    Item(1, "Title 1", "Description 1"),
-                    Item(1, "Title 1", "Description 1"),
-                    Item(1, "Title 1", "Description 1"),
-                    Item(1, "Title 1", "Description 1"),
-                    Item(1, "Title 1", "Description 1"),
-                    Item(1, "Title 1", "Description 1"),
-                    Item(1, "Title 1", "Description 1"),
+                    Item(1, "Title 1", "Description 1", image= R.drawable.dr),
+                    Item(1, "Title 1", "Description 1", image= R.drawable.eyes),
+                    Item(1, "Title 1", "Description 1", image= R.drawable.wide),
+                    Item(1, "Title 1", "Description 1", image= R.drawable.strangelob),
+                    Item(1, "Title 1", "Description 1", image= R.drawable.the_killing),
+                    Item(1, "Title 1", "Description 1", image= R.drawable.killing),
+                    Item(1, "Title 1", "Description 1", image= R.drawable.glory_paths),
+                    Item(1, "Title 1", "Description 1", image= R.drawable.monkey),
+                    Item(1, "Title 1", "Description 1", image= R.drawable.metal_jacket),
                     Item(1, "Title 1", "Description 1"),
                     Item(1, "Title 1", "Description 1"),
                     Item(1, "Title 1", "Description 1"),
@@ -196,7 +197,7 @@ fun ItemCard(
                     .fillMaxSize(),
                 painter = painterResource(id = item.image),
                 contentDescription = "image",
-                contentScale = ContentScale.FillWidth
+                contentScale = ContentScale.Crop
             )
         }
     }
