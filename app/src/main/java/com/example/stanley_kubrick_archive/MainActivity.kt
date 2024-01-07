@@ -2,12 +2,21 @@ package com.example.stanley_kubrick_archive
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
+
+
+
 import android.util.TypedValue
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,19 +40,24 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.stanley_kubrick_archive.data.Item
@@ -158,7 +172,8 @@ fun ItemCard(
     item: Item,
     index: Int,
     listState: LazyListState,
-    selectedCard: MutableState<Int?>
+    selectedCard: MutableState<Int?>,
+    selectedItemBounds: MutableState<Rect?>
 ) {
     val itemHeightPx = dpToPx((270f - 124f), LocalContext.current)
 
@@ -182,7 +197,12 @@ fun ItemCard(
                 rotationX =
                     -dynamicRotation
                 cameraDistance = 33f
-            }.clickable { selectedCard.value = index },
+            }.clickable { selectedCard.value = index }
+            .onGloballyPositioned { coordinates ->
+                if (selectedCard.value == index) {
+                    selectedItemBounds.value = coordinates.boundsInRoot()
+                }
+            },
 
 
     ) {
@@ -215,26 +235,65 @@ fun pxToDp(px: Float, context: Context): Float {
 fun SimpleItemList(items: List<Item>) {
     val listState = rememberLazyListState()
     var selectedCard = remember { mutableStateOf<Int?>(null) }
-    var selectedItemBounds by remember { mutableStateOf<Rect?>(null) }
+    var selectedItemBounds = remember { mutableStateOf<Rect?>(null) }
     LazyColumn(
         modifier = Modifier.padding(horizontal = 30.dp),
         state = listState,
         verticalArrangement = Arrangement.spacedBy((-124).dp),
     ) {
         itemsIndexed(items) { index, item ->
-            ItemCard(item, index, listState, selectedCard)
+            ItemCard(item, index, listState, selectedCard, selectedItemBounds)
         }
     }
+
     selectedCard.value?.let { index ->
-        CardDetailsScreen(index = index) { selectedCard.value = null }
+        AnimatedVisibility(
+            visible = selectedCard.value != null,
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically()
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.LightGray)
+                    .clickable {
+                        selectedCard.value = null
+                    }
+            ) {
+                CardDetailsScreen(index = index, selectedItemBounds) { selectedCard.value = null }
+            }
+        }
     }
 
 }
 
+private fun lerp(start: Float, stop: Float, fraction: Float): Float {
+    return (1 - fraction) * start + fraction * stop
+}
+
 @Composable
-fun CardDetailsScreen(index: Int, onClose: () -> Unit) {
-    Card(
+fun CardDetailsScreen(index: Int, bounds: MutableState<Rect?>, onClose: () -> Unit) {
+    val density = LocalDensity.current
+    val cardSize = with(density) { bounds.value?.size}
+    var cardPosition = with(density) { IntOffset(bounds.value?.left?.toInt() ?: 0, bounds.value?.top?.toInt() ?: 0) }
+    val animationProgress = animateFloatAsState(
+        targetValue = if (bounds.value != null) 1f else 0f,
+        animationSpec = tween(300)
+    ).value
+
+    val animatedX = lerp(cardPosition.x.toFloat(), 0f, animationProgress)
+    val animatedY = lerp(cardPosition.y.toFloat(), 0f, animationProgress)
+
+    Box(
         modifier = Modifier
+            .graphicsLayer {
+                // Apply size transformation
+                // Apply translation (position) transformation
+                this.translationX = animatedX
+                this.translationY = animatedY
+            }
+
             .height(270.dp)
             .fillMaxWidth()
             .graphicsLayer {
