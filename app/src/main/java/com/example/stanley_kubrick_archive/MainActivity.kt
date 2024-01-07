@@ -3,7 +3,6 @@ package com.example.stanley_kubrick_archive
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.util.Log
 import android.util.TypedValue
 import androidx.activity.ComponentActivity
@@ -27,12 +26,9 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -42,14 +38,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.stanley_kubrick_archive.data.Item
 import com.example.stanley_kubrick_archive.ui.theme.StanleyKubrickArchiveTheme
-import kotlinx.coroutines.currentCoroutineContext
 
-@OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,7 +80,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier
                             .align(Alignment.BottomStart)
                             .fillMaxWidth()
-                            .height(120.dp)
+                            .height(90.dp)
                             .background(
                                 brush = Brush.verticalGradient(
                                     colors = listOf(
@@ -160,17 +153,16 @@ fun ItemCard(
     index: Int,
     listState: LazyListState
 ) {
-    Log.d(
-        "TAG",
-        "ItemCard: ${
-            pxToDp(
-                listState.firstVisibleItemScrollOffset.toFloat(),
-                LocalContext.current
-            )
-        }"
-    )
-    val itemHeightPx = dpToPx(270f, LocalContext.current)
+    val itemHeightPx = dpToPx((270f - 124f), LocalContext.current)
+
     val dynamicRotation = if (index > listState.firstVisibleItemIndex) {
+        Log.d(
+            "TAG",
+            "ItemCard: ${
+                20f * (index - listState.firstVisibleItemIndex)
+            } - ${(listState.firstVisibleItemScrollOffset / itemHeightPx) * 20f} = ${20f * (index - listState.firstVisibleItemIndex)
+                    - (listState.firstVisibleItemScrollOffset / itemHeightPx) * 20f}"
+        )
         20f * (index - listState.firstVisibleItemIndex) - (listState.firstVisibleItemScrollOffset / itemHeightPx) * 20f
     } else {
         0f
