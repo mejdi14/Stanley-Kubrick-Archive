@@ -288,8 +288,6 @@ fun CardDetailsScreen(index: Int, bounds: MutableState<Rect?>, onClose: () -> Un
     Box(
         modifier = Modifier
             .graphicsLayer {
-                // Apply size transformation
-                // Apply translation (position) transformation
                 this.translationX = animatedX
                 this.translationY = animatedY
             }
