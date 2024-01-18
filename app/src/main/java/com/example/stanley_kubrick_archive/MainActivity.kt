@@ -3,15 +3,12 @@ package com.example.stanley_kubrick_archive
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 
 
 import android.util.TypedValue
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -43,9 +40,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -53,14 +48,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.stanley_kubrick_archive.component.CardDetailsScreen
-import com.example.stanley_kubrick_archive.data.Item
+import com.example.stanley_kubrick_archive.data.MovieCard
+import com.example.stanley_kubrick_archive.data.movieList
 import com.example.stanley_kubrick_archive.ui.theme.StanleyKubrickArchiveTheme
 
 class MainActivity : ComponentActivity() {
@@ -68,26 +62,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             StanleyKubrickArchiveTheme {
-                val items = listOf(
-                    Item(1, "Title 1", "Description 1", image = R.drawable.space_odyssey),
-                    Item(1, "Title 1", "Description 1", image = R.drawable.clockwork_orange),
-                    Item(1, "Title 1", "Description 1", image = R.drawable.lolita),
-                    Item(1, "Title 1", "Description 1", image = R.drawable.glory),
-                    Item(1, "Title 1", "Description 1", image = R.drawable.shining),
-                    Item(1, "Title 1", "Description 1", image = R.drawable.barry_lyndon),
-                    Item(1, "Title 1", "Description 1", image = R.drawable.dr),
-                    Item(1, "Title 1", "Description 1", image = R.drawable.eyes),
-                    Item(1, "Title 1", "Description 1", image = R.drawable.wide),
-                    Item(1, "Title 1", "Description 1", image = R.drawable.strangelob),
-                    Item(1, "Title 1", "Description 1", image = R.drawable.the_killing),
-                    Item(1, "Title 1", "Description 1", image = R.drawable.killing),
-                    Item(1, "Title 1", "Description 1", image = R.drawable.glory_paths),
-                    Item(1, "Title 1", "Description 1", image = R.drawable.monkey),
-                    Item(1, "Title 1", "Description 1", image = R.drawable.metal_jacket),
-                    Item(1, "Title 1", "Description 1"),
-                    Item(1, "Title 1", "Description 1"),
-                    Item(1, "Title 1", "Description 1"),
-                )
+                val items = movieList
                 Box(
                     modifier = Modifier
                         .background(color = Color.Black)
@@ -122,7 +97,7 @@ class MainActivity : ComponentActivity() {
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-private fun HomeScreen(items: List<Item>) {
+private fun HomeScreen(items: List<MovieCard>) {
     SimpleItemList(items = items)
 }
 
@@ -169,7 +144,7 @@ fun dpToPx(dp: Float, context: Context): Float {
 
 @Composable
 fun ItemCard(
-    item: Item,
+    item: MovieCard,
     index: Int,
     listState: LazyListState,
     selectedCard: MutableState<Int?>,
@@ -178,15 +153,6 @@ fun ItemCard(
     val itemHeightPx = dpToPx((270f - 124f), LocalContext.current)
 
     val dynamicRotation = if (index > listState.firstVisibleItemIndex) {
-        Log.d(
-            "TAG",
-            "ItemCard: ${
-                20f * (index - listState.firstVisibleItemIndex)
-            } - ${(listState.firstVisibleItemScrollOffset / itemHeightPx) * 20f} = ${
-                20f * (index - listState.firstVisibleItemIndex)
-                        - (listState.firstVisibleItemScrollOffset / itemHeightPx) * 20f
-            }"
-        )
         20f * (index - listState.firstVisibleItemIndex) - (listState.firstVisibleItemScrollOffset / itemHeightPx) * 20f
     } else {
         0f
@@ -235,7 +201,7 @@ fun pxToDp(px: Float, context: Context): Float {
 }
 
 @Composable
-fun SimpleItemList(items: List<Item>) {
+fun SimpleItemList(items: List<MovieCard>) {
     val listState = rememberLazyListState()
     val selectedCard = remember { mutableStateOf<Int?>(null) }
     val selectedItemBounds = remember { mutableStateOf<Rect?>(null) }
