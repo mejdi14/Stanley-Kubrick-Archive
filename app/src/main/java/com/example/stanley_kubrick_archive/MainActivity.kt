@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Log
 
 
-
 import android.util.TypedValue
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -60,6 +59,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.stanley_kubrick_archive.component.CardDetailsScreen
 import com.example.stanley_kubrick_archive.data.Item
 import com.example.stanley_kubrick_archive.ui.theme.StanleyKubrickArchiveTheme
 
@@ -69,21 +69,21 @@ class MainActivity : ComponentActivity() {
         setContent {
             StanleyKubrickArchiveTheme {
                 val items = listOf(
-                    Item(1, "Title 1", "Description 1", image= R.drawable.space_odyssey),
-                    Item(1, "Title 1", "Description 1", image= R.drawable.clockwork_orange),
-                    Item(1, "Title 1", "Description 1", image= R.drawable.lolita),
-                    Item(1, "Title 1", "Description 1", image= R.drawable.glory),
-                    Item(1, "Title 1", "Description 1", image= R.drawable.shining),
-                    Item(1, "Title 1", "Description 1", image= R.drawable.barry_lyndon),
-                    Item(1, "Title 1", "Description 1", image= R.drawable.dr),
-                    Item(1, "Title 1", "Description 1", image= R.drawable.eyes),
-                    Item(1, "Title 1", "Description 1", image= R.drawable.wide),
-                    Item(1, "Title 1", "Description 1", image= R.drawable.strangelob),
-                    Item(1, "Title 1", "Description 1", image= R.drawable.the_killing),
-                    Item(1, "Title 1", "Description 1", image= R.drawable.killing),
-                    Item(1, "Title 1", "Description 1", image= R.drawable.glory_paths),
-                    Item(1, "Title 1", "Description 1", image= R.drawable.monkey),
-                    Item(1, "Title 1", "Description 1", image= R.drawable.metal_jacket),
+                    Item(1, "Title 1", "Description 1", image = R.drawable.space_odyssey),
+                    Item(1, "Title 1", "Description 1", image = R.drawable.clockwork_orange),
+                    Item(1, "Title 1", "Description 1", image = R.drawable.lolita),
+                    Item(1, "Title 1", "Description 1", image = R.drawable.glory),
+                    Item(1, "Title 1", "Description 1", image = R.drawable.shining),
+                    Item(1, "Title 1", "Description 1", image = R.drawable.barry_lyndon),
+                    Item(1, "Title 1", "Description 1", image = R.drawable.dr),
+                    Item(1, "Title 1", "Description 1", image = R.drawable.eyes),
+                    Item(1, "Title 1", "Description 1", image = R.drawable.wide),
+                    Item(1, "Title 1", "Description 1", image = R.drawable.strangelob),
+                    Item(1, "Title 1", "Description 1", image = R.drawable.the_killing),
+                    Item(1, "Title 1", "Description 1", image = R.drawable.killing),
+                    Item(1, "Title 1", "Description 1", image = R.drawable.glory_paths),
+                    Item(1, "Title 1", "Description 1", image = R.drawable.monkey),
+                    Item(1, "Title 1", "Description 1", image = R.drawable.metal_jacket),
                     Item(1, "Title 1", "Description 1"),
                     Item(1, "Title 1", "Description 1"),
                     Item(1, "Title 1", "Description 1"),
@@ -113,7 +113,7 @@ class MainActivity : ComponentActivity() {
                             ),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
-                    ){}
+                    ) {}
                 }
             }
         }
@@ -182,8 +182,10 @@ fun ItemCard(
             "TAG",
             "ItemCard: ${
                 20f * (index - listState.firstVisibleItemIndex)
-            } - ${(listState.firstVisibleItemScrollOffset / itemHeightPx) * 20f} = ${20f * (index - listState.firstVisibleItemIndex)
-                    - (listState.firstVisibleItemScrollOffset / itemHeightPx) * 20f}"
+            } - ${(listState.firstVisibleItemScrollOffset / itemHeightPx) * 20f} = ${
+                20f * (index - listState.firstVisibleItemIndex)
+                        - (listState.firstVisibleItemScrollOffset / itemHeightPx) * 20f
+            }"
         )
         20f * (index - listState.firstVisibleItemIndex) - (listState.firstVisibleItemScrollOffset / itemHeightPx) * 20f
     } else {
@@ -197,7 +199,8 @@ fun ItemCard(
                 rotationX =
                     -dynamicRotation
                 cameraDistance = 33f
-            }.clickable { selectedCard.value = index }
+            }
+            .clickable { selectedCard.value = index }
             .onGloballyPositioned { coordinates ->
                 if (selectedCard.value == index) {
                     selectedItemBounds.value = coordinates.boundsInRoot()
@@ -205,7 +208,7 @@ fun ItemCard(
             },
 
 
-    ) {
+        ) {
         Surface(
             color = item.color,
             modifier = Modifier
@@ -234,8 +237,8 @@ fun pxToDp(px: Float, context: Context): Float {
 @Composable
 fun SimpleItemList(items: List<Item>) {
     val listState = rememberLazyListState()
-    var selectedCard = remember { mutableStateOf<Int?>(null) }
-    var selectedItemBounds = remember { mutableStateOf<Rect?>(null) }
+    val selectedCard = remember { mutableStateOf<Int?>(null) }
+    val selectedItemBounds = remember { mutableStateOf<Rect?>(null) }
     LazyColumn(
         modifier = Modifier.padding(horizontal = 30.dp),
         state = listState,
@@ -266,52 +269,4 @@ fun SimpleItemList(items: List<Item>) {
         }
     }
 
-}
-
-private fun lerp(start: Float, stop: Float, fraction: Float): Float {
-    return (1 - fraction) * start + fraction * stop
-}
-
-@Composable
-fun CardDetailsScreen(index: Int, bounds: MutableState<Rect?>, onClose: () -> Unit) {
-    val density = LocalDensity.current
-    val cardSize = with(density) { bounds.value?.size}
-    var cardPosition = with(density) { IntOffset(bounds.value?.left?.toInt() ?: 0, bounds.value?.top?.toInt() ?: 0) }
-    val animationProgress = animateFloatAsState(
-        targetValue = if (bounds.value != null) 1f else 0f,
-        animationSpec = tween(300)
-    ).value
-
-    val animatedX = lerp(cardPosition.x.toFloat(), 0f, animationProgress)
-    val animatedY = lerp(cardPosition.y.toFloat(), 0f, animationProgress)
-
-    Box(
-        modifier = Modifier
-            .graphicsLayer {
-                this.translationX = animatedX
-                this.translationY = animatedY
-            }
-
-            .height(270.dp)
-            .fillMaxWidth()
-            .graphicsLayer {
-                rotationX = 0f
-            }.clickable { onClose() },
-
-
-        ) {
-        Surface(
-
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            Image(
-                modifier = Modifier
-                    .fillMaxSize(),
-                painter = painterResource(id = R.drawable.glory_paths),
-                contentDescription = "image",
-                contentScale = ContentScale.Crop
-            )
-        }
-    }
 }
