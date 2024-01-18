@@ -3,9 +3,6 @@ package com.example.stanley_kubrick_archive
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-
-
-import android.util.TypedValue
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
@@ -56,6 +53,7 @@ import com.example.stanley_kubrick_archive.component.CardDetailsScreen
 import com.example.stanley_kubrick_archive.data.MovieCard
 import com.example.stanley_kubrick_archive.data.movieList
 import com.example.stanley_kubrick_archive.ui.theme.StanleyKubrickArchiveTheme
+import com.example.stanley_kubrick_archive.utils.movieCardDimension
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -150,7 +148,7 @@ fun ItemCard(
     selectedCard: MutableState<Int?>,
     selectedItemBounds: MutableState<Rect?>
 ) {
-    val itemHeightPx = dpToPx((270f - 124f), LocalContext.current)
+    val itemHeightPx = movieCardDimension(item, LocalContext.current)
 
     val dynamicRotation = if (index > listState.firstVisibleItemIndex) {
         20f * (index - listState.firstVisibleItemIndex) - (listState.firstVisibleItemScrollOffset / itemHeightPx) * 20f
@@ -189,15 +187,6 @@ fun ItemCard(
             )
         }
     }
-}
-
-
-fun pxToDp(px: Float, context: Context): Float {
-    return TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_DIP,
-        px,
-        context.resources.displayMetrics
-    )
 }
 
 @Composable
