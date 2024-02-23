@@ -157,7 +157,7 @@ fun ItemCard(
     }
     Card(
         modifier = Modifier
-            .height(270.dp)
+            .height((item.cardHeight).dp)
             .fillMaxWidth()
             .graphicsLayer {
                 rotationX =
@@ -183,7 +183,7 @@ fun ItemCard(
                     .fillMaxSize(),
                 painter = painterResource(id = item.image),
                 contentDescription = "image",
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.FillBounds
             )
         }
     }
