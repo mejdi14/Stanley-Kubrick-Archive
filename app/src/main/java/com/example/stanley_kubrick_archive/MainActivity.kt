@@ -6,6 +6,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -20,6 +24,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -33,6 +38,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -149,6 +155,15 @@ fun ItemCard(
     selectedItemBounds: MutableState<Rect?>
 ) {
     val itemHeightPx = movieCardDimension(item, LocalContext.current)
+    val targetOffset = if (selectedCard.value != null) 200.dp else 0.dp
+    val res = if((selectedCard.value ?: 0) == index) 0.dp else (if(index < (selectedCard.value ?: 0)  ) -targetOffset else targetOffset)
+    val animatedOffset by animateDpAsState(
+        targetValue = res,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ), label = "AnimatedOffset"
+    )
 
     val dynamicRotation = if (index > listState.firstVisibleItemIndex) {
         20f * (index - listState.firstVisibleItemIndex) - (listState.firstVisibleItemScrollOffset / itemHeightPx) * 20f
@@ -164,17 +179,18 @@ fun ItemCard(
                     -dynamicRotation
                 cameraDistance = 33f
             }
-            .clickable { selectedCard.value = index }
+            .clickable {
+                if (selectedCard.value == null) selectedCard.value = index else selectedCard.value =
+                    null
+            }
+            .offset(y = animatedOffset)
             .onGloballyPositioned { coordinates ->
                 if (selectedCard.value == index) {
                     selectedItemBounds.value = coordinates.boundsInRoot()
                 }
             },
-
-
-        ) {
+    ) {
         Surface(
-            color = item.color,
             modifier = Modifier
                 .fillMaxSize()
         ) {
@@ -204,24 +220,5 @@ fun SimpleItemList(items: List<MovieCard>) {
         }
     }
 
-    selectedCard.value?.let { index ->
-        AnimatedVisibility(
-            visible = selectedCard.value != null,
-            enter = fadeIn() + expandVertically(),
-            exit = fadeOut() + shrinkVertically()
-        ) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.LightGray)
-                    .clickable {
-                        selectedCard.value = null
-                    }
-            ) {
-                CardDetailsScreen(index = index, selectedItemBounds) { selectedCard.value = null }
-            }
-        }
-    }
 
 }
