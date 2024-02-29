@@ -36,10 +36,10 @@ fun CardItem(
     selectedItemBounds: MutableState<Rect?>
 ) {
     val itemHeightPx = movieCardDimension(item, LocalContext.current)
-    val targetOffset = if (selectedCard.value != null) 200.dp else 0.dp
+    val targetOffset = if (selectedCard.value != null) (item.cardHeight).dp else 0.dp
     val res = if ((selectedCard.value ?: 0) == index) 0.dp else (if (index < (selectedCard.value
             ?: 0)
-    ) -targetOffset else targetOffset)
+    ) -(targetOffset * ((index + 1) - (listState.firstVisibleItemIndex))) else (targetOffset * ((index + 1) - (listState.firstVisibleItemIndex))))
     val animatedOffset by animateDpAsState(
         targetValue = res,
         animationSpec = spring(
