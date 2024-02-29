@@ -13,7 +13,8 @@ data class MovieCard(
     ),
     val image: Int = R.drawable.clockwork,
     val cardHeight: Float = 288f,
-    val cardOverlap: Float = 124f
+    val cardOverlap: Float = 124f,
+    val crossPathHeight: Float = cardHeight + cardOverlap
 )
 
 val movieList = listOf(
