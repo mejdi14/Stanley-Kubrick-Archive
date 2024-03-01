@@ -22,11 +22,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.stanley_kubrick_archive.data.MovieCard
 import com.example.stanley_kubrick_archive.utils.movieCardDimension
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun CardItem(
     item: MovieCard,
@@ -56,7 +58,6 @@ fun CardItem(
         ), label = "AnimatedOffset"
     )
 
-
     val initialRotationValue = if (index > compositeState.value.first) {
         20f * (index - compositeState.value.first) - (compositeState.value.second / itemHeightPx) * 20f
     } else {
@@ -68,7 +69,8 @@ fun CardItem(
 
     val dynamicRotation by animateFloatAsState(
         targetValue = targetRotationValue,
-        animationSpec = tween(durationMillis = if (selectedCard.value != null || animationInProgress.value) 1000 else 0)
+        animationSpec = tween(durationMillis = if (selectedCard.value != null || animationInProgress.value) 1000 else 0),
+        label = "CardRotationOnSelection"
     )
 
 

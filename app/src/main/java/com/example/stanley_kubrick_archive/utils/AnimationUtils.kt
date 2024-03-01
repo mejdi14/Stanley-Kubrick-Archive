@@ -3,9 +3,7 @@ package com.example.stanley_kubrick_archive.utils
 import android.content.Context
 import android.util.TypedValue
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import com.example.stanley_kubrick_archive.data.MovieCard
-import com.example.stanley_kubrick_archive.dpToPx
 
 fun cardAnimationPosition(start: Float, stop: Float, fraction: Float): Float {
     return (1 - fraction) * start + fraction * stop
@@ -21,4 +19,8 @@ fun pxToDp(px: Float, context: Context): Float {
         px,
         context.resources.displayMetrics
     )
+}
+
+fun dpToPx(dp: Float, context: Context): Float {
+    return dp * context.resources.displayMetrics.density
 }
