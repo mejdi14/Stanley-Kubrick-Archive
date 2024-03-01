@@ -47,11 +47,11 @@ fun CardItem(
     val animationDistanceY =
         ((index + 1) - (compositeState.value.first - (if (compositeState.value.second < item.crossPathHeight) 1 else 0)))
     val targetOffset = if (selectedCard.value != null) (item.cardHeight).dp else 0.dp
-    val res = if ((selectedCard.value ?: 0) == index) 0.dp else (if (index < (selectedCard.value
+    val cardOffsetPosition = if ((selectedCard.value ?: 0) == index) 0.dp else (if (index < (selectedCard.value
             ?: 0)
     ) -(targetOffset * animationDistanceY) else (targetOffset * animationDistanceY))
     val animatedOffset by animateDpAsState(
-        targetValue = res,
+        targetValue = cardOffsetPosition,
         animationSpec = spring(
             dampingRatio = Spring.DampingRatioNoBouncy,
             stiffness = Spring.StiffnessLow
@@ -69,7 +69,13 @@ fun CardItem(
 
     val dynamicRotation by animateFloatAsState(
         targetValue = targetRotationValue,
-        animationSpec = tween(durationMillis = if (selectedCard.value != null || animationInProgress.value) 1000 else 0),
+        animationSpec =
+        tween(
+            durationMillis = if (selectedCard.value != null || animationInProgress.value)
+                item.cardSelectionAnimationDuration.toInt()
+            else
+                0
+        ),
         label = "CardRotationOnSelection"
     )
 
@@ -81,14 +87,14 @@ fun CardItem(
             .graphicsLayer {
                 rotationX =
                     -dynamicRotation
-                cameraDistance = 33f
+                cameraDistance = item.cardCameraDistance
             }
             .clickable {
                 if (selectedCard.value == null) selectedCard.value = index else {
                     GlobalScope.launch(Dispatchers.Main) { // Use GlobalScope for simplicity in this example
                         selectedCard.value = null
                         animationInProgress.value = true
-                        delay(1000)
+                        delay(item.cardSelectionAnimationDuration)
                         animationInProgress.value = false
                     }
                 }
