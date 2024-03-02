@@ -35,7 +35,8 @@ fun CardItem(
     index: Int,
     listState: LazyListState,
     selectedCard: MutableState<Int?>,
-    animationInProgress: MutableState<Boolean>
+    animationInProgress: MutableState<Boolean>,
+    userScrollEnabled: MutableState<Boolean>
 ) {
     val compositeState = remember {
         derivedStateOf {
@@ -49,7 +50,7 @@ fun CardItem(
                 (compositeState.value.first - (if (compositeState.value.second < item.crossPathHeight) 1 else 0)))
 
     val targetOffset = if (selectedCard.value != null) (item.cardHeight).dp else 0.dp
-    val cardOffsetPosition = if ((selectedCard.value ?: -1) == index) -110.dp else (if (index < (selectedCard.value
+    val cardOffsetPosition = if ((selectedCard.value ?: -1) == index) 0.dp else (if (index < (selectedCard.value
             ?: 0)
     ) -(targetOffset * animationDistanceY) else (targetOffset * animationDistanceY))
     val animatedOffset by animateDpAsState(
@@ -90,14 +91,19 @@ fun CardItem(
                 rotationX =
                     -dynamicRotation
                 cameraDistance = item.cardCameraDistance
+                translationY = if(selectedCard.value == index) -300f else 0f
             }
             .clickable {
-                if (selectedCard.value == null) selectedCard.value = index else {
                     GlobalScope.launch(Dispatchers.Main) { // Use GlobalScope for simplicity in this example
+                if (selectedCard.value == null) {
+                    selectedCard.value = index
+                    userScrollEnabled.value = false
+                } else {
                         selectedCard.value = null
                         animationInProgress.value = true
                         delay(item.cardSelectionAnimationDuration)
                         animationInProgress.value = false
+                    userScrollEnabled.value = true
                     }
                 }
             }
