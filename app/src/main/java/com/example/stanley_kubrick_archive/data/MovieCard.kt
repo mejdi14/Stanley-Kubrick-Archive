@@ -20,15 +20,15 @@ data class MovieCard(
 )
 
 val movieList = listOf(
-    MovieCard(1, "Title 1", "Description 1", image = R.drawable.h),
-    MovieCard(1, "Title 1", "Description 1", image = R.drawable.f),
-    MovieCard(1, "Title 1", "Description 1", image = R.drawable.a),
+    MovieCard(1, "Title 1", "Description 1", image = R.drawable.clockwork_orange),
+    MovieCard(1, "Title 1", "Description 1", image = R.drawable.bary),
+    MovieCard(1, "Title 1", "Description 1", image = R.drawable.space_odyssy),
     MovieCard(1, "Title 1", "Description 1", image = R.drawable.metal_jacket),
     MovieCard(1, "Title 1", "Description 1", image = R.drawable.shining),
-    MovieCard(1, "Title 1", "Description 1", image = R.drawable.pa),
+    MovieCard(1, "Title 1", "Description 1", image = R.drawable.paths_of_glory),
     MovieCard(1, "Title 1", "Description 1", image = R.drawable.i),
-    MovieCard(1, "Title 1", "Description 1", image = R.drawable.spar),
-    MovieCard(1, "Title 1", "Description 1", image = R.drawable.dr),
-    MovieCard(1, "Title 1", "Description 1", image = R.drawable.eys),
-    MovieCard(1, "Title 1", "Description 1", image = R.drawable.lol),
+    MovieCard(1, "Title 1", "Description 1", image = R.drawable.spartacus),
+    MovieCard(1, "Title 1", "Description 1", image = R.drawable.dr_strangelove),
+    MovieCard(1, "Title 1", "Description 1", image = R.drawable.eyes_wide_shut),
+    MovieCard(1, "Title 1", "Description 1", image = R.drawable.lolita),
 )

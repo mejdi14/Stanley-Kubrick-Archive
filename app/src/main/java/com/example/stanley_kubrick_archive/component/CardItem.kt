@@ -45,9 +45,11 @@ fun CardItem(
 
     val itemHeightPx = movieCardDimension(item, LocalContext.current)
     val animationDistanceY =
-        ((index + 1) - (compositeState.value.first - (if (compositeState.value.second < item.crossPathHeight) 1 else 0)))
+        ((index + 1) -
+                (compositeState.value.first - (if (compositeState.value.second < item.crossPathHeight) 1 else 0)))
+
     val targetOffset = if (selectedCard.value != null) (item.cardHeight).dp else 0.dp
-    val cardOffsetPosition = if ((selectedCard.value ?: 0) == index) 0.dp else (if (index < (selectedCard.value
+    val cardOffsetPosition = if ((selectedCard.value ?: -1) == index) -110.dp else (if (index < (selectedCard.value
             ?: 0)
     ) -(targetOffset * animationDistanceY) else (targetOffset * animationDistanceY))
     val animatedOffset by animateDpAsState(
