@@ -30,8 +30,8 @@ import kotlinx.coroutines.launch
 
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
-fun CardItem(
-    item: MovieCard,
+fun MovieItem(
+    movieCard: MovieCard,
     index: Int,
     listState: LazyListState,
     selectedCard: MutableState<Int?>,
@@ -44,12 +44,12 @@ fun CardItem(
         }
     }
 
-    val itemHeightPx = movieCardDimension(item, LocalContext.current)
+    val itemHeightPx = movieCardDimension(movieCard, LocalContext.current)
     val animationDistanceY =
         ((index + 1) -
-                (compositeState.value.first - (if (compositeState.value.second < item.crossPathHeight) 1 else 0)))
+                (compositeState.value.first - (if (compositeState.value.second < movieCard.crossPathHeight) 1 else 0)))
 
-    val targetOffset = if (selectedCard.value != null) (item.cardHeight).dp else 0.dp
+    val targetOffset = if (selectedCard.value != null) (movieCard.cardHeight).dp else 0.dp
     val cardOffsetPosition = if ((selectedCard.value ?: -1) == index) 0.dp else (if (index < (selectedCard.value
             ?: 0)
     ) -(targetOffset * animationDistanceY) else (targetOffset * animationDistanceY))
@@ -75,7 +75,24 @@ fun CardItem(
         animationSpec =
         tween(
             durationMillis = if (selectedCard.value != null || animationInProgress.value)
-                item.cardSelectionAnimationDuration.toInt()
+                movieCard.cardSelectionAnimationDuration.toInt()
+            else
+                0
+        ),
+        label = "CardRotationOnSelection"
+    )
+
+
+
+    val targetTransitionValue =
+        if (selectedCard.value != null && selectedCard.value == index) -((((index ) - compositeState.value.first) * (movieCard.crossPathHeight)) ) else 0f
+
+    val dynamicTransitionY by animateFloatAsState(
+        targetValue = targetTransitionValue,
+        animationSpec =
+        tween(
+            durationMillis = if (selectedCard.value != null || animationInProgress.value)
+                movieCard.cardSelectionAnimationDuration.toInt()
             else
                 0
         ),
@@ -85,13 +102,13 @@ fun CardItem(
 
     Card(
         modifier = Modifier
-            .height((item.cardHeight).dp)
+            .height((movieCard.cardHeight).dp)
             .fillMaxWidth()
             .graphicsLayer {
                 rotationX =
                     -dynamicRotation
-                cameraDistance = item.cardCameraDistance
-                translationY = if(selectedCard.value == index) -300f else 0f
+                cameraDistance = movieCard.cardCameraDistance
+                translationY = dynamicTransitionY
             }
             .clickable {
                     GlobalScope.launch(Dispatchers.Main) { // Use GlobalScope for simplicity in this example
@@ -101,7 +118,7 @@ fun CardItem(
                 } else {
                         selectedCard.value = null
                         animationInProgress.value = true
-                        delay(item.cardSelectionAnimationDuration)
+                        delay(movieCard.cardSelectionAnimationDuration)
                         animationInProgress.value = false
                     userScrollEnabled.value = true
                     }
@@ -109,6 +126,6 @@ fun CardItem(
             }
             .offset(y = animatedOffset),
     ) {
-        CardContent(item)
+        CardContent(movieCard)
     }
 }
