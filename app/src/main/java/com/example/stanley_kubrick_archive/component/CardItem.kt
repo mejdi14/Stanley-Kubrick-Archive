@@ -85,7 +85,7 @@ fun MovieItem(
 
 
     val targetTransitionValue =
-        if (selectedCard.value != null && selectedCard.value == index) -((((index ) - compositeState.value.first) * (movieCard.crossPathHeight)) ) else 0f
+        if (selectedCard.value != null && selectedCard.value == index) -((((index ) - compositeState.value.first) * (movieCard.crossPathHeight)) - compositeState.value.second ) else 0f
 
     val dynamicTransitionY by animateFloatAsState(
         targetValue = targetTransitionValue,
