@@ -13,15 +13,19 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.stanley_kubrick_archive.data.MovieCard
+import com.example.stanley_kubrick_archive.utils.cardsPositionSwitchAfterSelection
 import com.example.stanley_kubrick_archive.utils.movieCardDimension
+import com.example.stanley_kubrick_archive.utils.transitionYAfterSelectionAnimation
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -30,8 +34,8 @@ import kotlinx.coroutines.launch
 
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
-fun CardItem(
-    item: MovieCard,
+fun MovieItem(
+    movieCard: MovieCard,
     index: Int,
     listState: LazyListState,
     selectedCard: MutableState<Int?>,
@@ -44,15 +48,16 @@ fun CardItem(
         }
     }
 
-    val itemHeightPx = movieCardDimension(item, LocalContext.current)
-    val animationDistanceY =
-        ((index + 1) -
-                (compositeState.value.first - (if (compositeState.value.second < item.crossPathHeight) 1 else 0)))
-
-    val targetOffset = if (selectedCard.value != null) (item.cardHeight).dp else 0.dp
-    val cardOffsetPosition = if ((selectedCard.value ?: -1) == index) 0.dp else (if (index < (selectedCard.value
-            ?: 0)
-    ) -(targetOffset * animationDistanceY) else (targetOffset * animationDistanceY))
+    val (itemHeightPx, animationDistanceY, targetOffset) = cardsPositionSwitchAfterSelection(
+        movieCard,
+        index,
+        compositeState,
+        selectedCard
+    )
+    val cardOffsetPosition =
+        if ((selectedCard.value ?: -1) == index) 0.dp else (if (index < (selectedCard.value
+                ?: 0)
+        ) -(targetOffset * animationDistanceY) else (targetOffset * animationDistanceY))
     val animatedOffset by animateDpAsState(
         targetValue = cardOffsetPosition,
         animationSpec = spring(
@@ -75,7 +80,23 @@ fun CardItem(
         animationSpec =
         tween(
             durationMillis = if (selectedCard.value != null || animationInProgress.value)
-                item.cardSelectionAnimationDuration.toInt()
+                movieCard.cardSelectionAnimationDuration.toInt()
+            else
+                0
+        ),
+        label = "CardRotationOnSelection"
+    )
+
+
+    val targetTransitionValue =
+        transitionYAfterSelectionAnimation(selectedCard, index, compositeState, movieCard)
+
+    val dynamicTransitionY by animateFloatAsState(
+        targetValue = targetTransitionValue,
+        animationSpec =
+        tween(
+            durationMillis = if (selectedCard.value != null || animationInProgress.value)
+                movieCard.cardSelectionAnimationDuration.toInt()
             else
                 0
         ),
@@ -85,30 +106,31 @@ fun CardItem(
 
     Card(
         modifier = Modifier
-            .height((item.cardHeight).dp)
+            .height((movieCard.cardHeight).dp)
             .fillMaxWidth()
             .graphicsLayer {
                 rotationX =
                     -dynamicRotation
-                cameraDistance = item.cardCameraDistance
-                translationY = if(selectedCard.value == index) -300f else 0f
+                cameraDistance = movieCard.cardCameraDistance
+                translationY = dynamicTransitionY
             }
             .clickable {
-                    GlobalScope.launch(Dispatchers.Main) { // Use GlobalScope for simplicity in this example
-                if (selectedCard.value == null) {
-                    selectedCard.value = index
-                    userScrollEnabled.value = false
-                } else {
+                GlobalScope.launch(Dispatchers.Main) { // Use GlobalScope for simplicity in this example
+                    if (selectedCard.value == null) {
+                        selectedCard.value = index
+                        userScrollEnabled.value = false
+                    } else {
                         selectedCard.value = null
                         animationInProgress.value = true
-                        delay(item.cardSelectionAnimationDuration)
+                        delay(movieCard.cardSelectionAnimationDuration)
                         animationInProgress.value = false
-                    userScrollEnabled.value = true
+                        userScrollEnabled.value = true
                     }
                 }
             }
             .offset(y = animatedOffset),
     ) {
-        CardContent(item)
+        CardContent(movieCard)
     }
 }
+

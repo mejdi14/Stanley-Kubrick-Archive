@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.stanley_kubrick_archive.component.BottomGradientLayer
-import com.example.stanley_kubrick_archive.component.CardItem
+import com.example.stanley_kubrick_archive.component.MovieItem
 import com.example.stanley_kubrick_archive.component.ToolbarWithTextAndIcon
 import com.example.stanley_kubrick_archive.data.MovieCard
 import com.example.stanley_kubrick_archive.data.movieList
@@ -50,12 +50,12 @@ class MainActivity : ComponentActivity() {
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 private fun HomeScreen(items: List<MovieCard>) {
-    SimpleItemList(items = items)
+    MoviesCardsList(items = items)
 }
 
 
 @Composable
-fun SimpleItemList(items: List<MovieCard>) {
+fun MoviesCardsList(items: List<MovieCard>) {
     val listState = rememberLazyListState()
     val selectedCard = remember { mutableStateOf<Int?>(null) }
     val animationInProgress = remember { mutableStateOf<Boolean>(false) }
@@ -67,7 +67,7 @@ fun SimpleItemList(items: List<MovieCard>) {
         userScrollEnabled = userScrollEnabled.value
     ) {
         itemsIndexed(items) { index, item ->
-            CardItem(item, index, listState, selectedCard, animationInProgress, userScrollEnabled)
+            MovieItem(item, index, listState, selectedCard, animationInProgress, userScrollEnabled)
         }
     }
 }
