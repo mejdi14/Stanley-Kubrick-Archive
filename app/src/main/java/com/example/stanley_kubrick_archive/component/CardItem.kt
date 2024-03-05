@@ -13,15 +13,19 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.stanley_kubrick_archive.data.MovieCard
+import com.example.stanley_kubrick_archive.utils.cardsPositionSwitchAfterSelection
 import com.example.stanley_kubrick_archive.utils.movieCardDimension
+import com.example.stanley_kubrick_archive.utils.transitionYAfterSelectionAnimation
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -44,15 +48,16 @@ fun MovieItem(
         }
     }
 
-    val itemHeightPx = movieCardDimension(movieCard, LocalContext.current)
-    val animationDistanceY =
-        ((index + 1) -
-                (compositeState.value.first - (if (compositeState.value.second < movieCard.crossPathHeight) 1 else 0)))
-
-    val targetOffset = if (selectedCard.value != null) (movieCard.cardHeight).dp else 0.dp
-    val cardOffsetPosition = if ((selectedCard.value ?: -1) == index) 0.dp else (if (index < (selectedCard.value
-            ?: 0)
-    ) -(targetOffset * animationDistanceY) else (targetOffset * animationDistanceY))
+    val (itemHeightPx, animationDistanceY, targetOffset) = cardsPositionSwitchAfterSelection(
+        movieCard,
+        index,
+        compositeState,
+        selectedCard
+    )
+    val cardOffsetPosition =
+        if ((selectedCard.value ?: -1) == index) 0.dp else (if (index < (selectedCard.value
+                ?: 0)
+        ) -(targetOffset * animationDistanceY) else (targetOffset * animationDistanceY))
     val animatedOffset by animateDpAsState(
         targetValue = cardOffsetPosition,
         animationSpec = spring(
@@ -83,9 +88,8 @@ fun MovieItem(
     )
 
 
-
     val targetTransitionValue =
-        if (selectedCard.value != null && selectedCard.value == index) -((((index ) - compositeState.value.first) * (movieCard.crossPathHeight)) - compositeState.value.second ) else 0f
+        transitionYAfterSelectionAnimation(selectedCard, index, compositeState, movieCard)
 
     val dynamicTransitionY by animateFloatAsState(
         targetValue = targetTransitionValue,
@@ -111,16 +115,16 @@ fun MovieItem(
                 translationY = dynamicTransitionY
             }
             .clickable {
-                    GlobalScope.launch(Dispatchers.Main) { // Use GlobalScope for simplicity in this example
-                if (selectedCard.value == null) {
-                    selectedCard.value = index
-                    userScrollEnabled.value = false
-                } else {
+                GlobalScope.launch(Dispatchers.Main) { // Use GlobalScope for simplicity in this example
+                    if (selectedCard.value == null) {
+                        selectedCard.value = index
+                        userScrollEnabled.value = false
+                    } else {
                         selectedCard.value = null
                         animationInProgress.value = true
                         delay(movieCard.cardSelectionAnimationDuration)
                         animationInProgress.value = false
-                    userScrollEnabled.value = true
+                        userScrollEnabled.value = true
                     }
                 }
             }
@@ -129,3 +133,4 @@ fun MovieItem(
         CardContent(movieCard)
     }
 }
+
