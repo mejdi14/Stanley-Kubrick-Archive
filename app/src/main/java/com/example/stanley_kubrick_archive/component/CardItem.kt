@@ -1,11 +1,15 @@
 package com.example.stanley_kubrick_archive.component
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -18,6 +22,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
@@ -104,33 +109,45 @@ fun MovieItem(
     )
 
 
-    Card(
-        modifier = Modifier
-            .height((movieCard.cardHeight).dp)
-            .fillMaxWidth()
-            .graphicsLayer {
-                rotationX =
-                    -dynamicRotation
-                cameraDistance = movieCard.cardCameraDistance
-                translationY = dynamicTransitionY
-            }
-            .clickable {
-                GlobalScope.launch(Dispatchers.Main) { // Use GlobalScope for simplicity in this example
-                    if (selectedCard.value == null) {
-                        selectedCard.value = index
-                        userScrollEnabled.value = false
-                    } else {
-                        selectedCard.value = null
-                        animationInProgress.value = true
-                        delay(movieCard.cardSelectionAnimationDuration)
-                        animationInProgress.value = false
-                        userScrollEnabled.value = true
+    Column {
+        Card(
+            modifier = Modifier
+                .height((movieCard.cardHeight).dp)
+                .fillMaxWidth()
+                .graphicsLayer {
+                    rotationX =
+                        -dynamicRotation
+                    cameraDistance = movieCard.cardCameraDistance
+                    translationY = dynamicTransitionY
+                }
+                .clickable {
+                    GlobalScope.launch(Dispatchers.Main) {
+                        if (selectedCard.value == null) {
+                            selectedCard.value = index
+                            userScrollEnabled.value = false
+                        } else {
+                            selectedCard.value = null
+                            animationInProgress.value = true
+                            delay(movieCard.cardSelectionAnimationDuration)
+                            animationInProgress.value = false
+                            userScrollEnabled.value = true
+                        }
                     }
                 }
-            }
-            .offset(y = animatedOffset),
-    ) {
-        CardContent(movieCard)
+                .offset(y = animatedOffset),
+        ) {
+            CardContent(movieCard)
+        }
+        AnimatedVisibility(
+            visible = selectedCard.value != null, modifier = Modifier
+                .background(color = Color.Red)
+                .height(200.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(color = Color.Red)
+                    .height(200.dp)
+            )
+        }
     }
 }
-
