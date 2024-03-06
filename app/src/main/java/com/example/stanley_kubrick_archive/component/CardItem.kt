@@ -6,6 +6,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -13,7 +14,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -37,7 +40,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@OptIn(DelicateCoroutinesApi::class)
+@OptIn(DelicateCoroutinesApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun MovieItem(
     movieCard: MovieCard,
@@ -108,46 +111,56 @@ fun MovieItem(
         label = "CardRotationOnSelection"
     )
 
+    LazyColumn(modifier = Modifier.height((movieCard.cardHeight).dp)) {
+        item {
 
-    Column {
-        Card(
-            modifier = Modifier
-                .height((movieCard.cardHeight).dp)
-                .fillMaxWidth()
-                .graphicsLayer {
-                    rotationX =
-                        -dynamicRotation
-                    cameraDistance = movieCard.cardCameraDistance
-                    translationY = dynamicTransitionY
-                }
-                .clickable {
-                    GlobalScope.launch(Dispatchers.Main) {
-                        if (selectedCard.value == null) {
-                            selectedCard.value = index
-                            userScrollEnabled.value = false
-                        } else {
-                            selectedCard.value = null
-                            animationInProgress.value = true
-                            delay(movieCard.cardSelectionAnimationDuration)
-                            animationInProgress.value = false
-                            userScrollEnabled.value = true
+
+            Card(
+                modifier = Modifier
+                    .height((movieCard.cardHeight).dp)
+                    .fillMaxWidth()
+                    .graphicsLayer {
+                        rotationX =
+                            -dynamicRotation
+                        cameraDistance = movieCard.cardCameraDistance
+                        translationY = dynamicTransitionY
+                    }
+                    .clickable {
+                        GlobalScope.launch(Dispatchers.Main) {
+                            if (selectedCard.value == null) {
+                                selectedCard.value = index
+                                userScrollEnabled.value = false
+                            } else {
+                                selectedCard.value = null
+                                animationInProgress.value = true
+                                delay(movieCard.cardSelectionAnimationDuration)
+                                animationInProgress.value = false
+                                userScrollEnabled.value = true
+                            }
                         }
                     }
-                }
-                .offset(y = animatedOffset),
-        ) {
-            CardContent(movieCard)
+                    .offset(y = animatedOffset),
+            ) {
+                CardContent(movieCard)
+            }
         }
-        AnimatedVisibility(
-            visible = selectedCard.value != null, modifier = Modifier
-                .background(color = Color.Red)
-                .height(200.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .background(color = Color.Red)
-                    .height(200.dp)
-            )
+        item {
+            AnimatedVisibility(visible = selectedCard.value == index) {
+                Card(
+                    modifier = Modifier
+                        .height((movieCard.cardHeight).dp)
+                        .fillMaxWidth()
+                ) {
+                    CardContent(movieCard)
+                }
+                Card(
+                    modifier = Modifier
+                        .height((movieCard.cardHeight).dp)
+                        .fillMaxWidth()
+                ) {
+                    CardContent(movieCard)
+                }
+            }
         }
     }
 }
