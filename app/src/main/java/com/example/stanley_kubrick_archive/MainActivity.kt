@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -60,14 +61,45 @@ fun MoviesCardsList(items: List<MovieCard>) {
     val selectedCard = remember { mutableStateOf<Int?>(null) }
     val animationInProgress = remember { mutableStateOf<Boolean>(false) }
     val userScrollEnabled = remember { mutableStateOf<Boolean>(true) }
-    LazyColumn(
-        modifier = Modifier.padding(horizontal = 30.dp),
-        state = listState,
-        verticalArrangement = Arrangement.spacedBy((-124).dp),
-        userScrollEnabled = userScrollEnabled.value
-    ) {
-        itemsIndexed(items) { index, item ->
-            MovieItem(item, index, listState, selectedCard, animationInProgress, userScrollEnabled)
+    Box {
+        LazyColumn(
+            modifier = Modifier.padding(horizontal = 30.dp),
+            state = listState,
+            verticalArrangement = Arrangement.spacedBy((-124).dp),
+            userScrollEnabled = userScrollEnabled.value
+        ) {
+            itemsIndexed(items) { index, item ->
+                MovieItem(
+                    item,
+                    index,
+                    listState,
+                    selectedCard,
+                    animationInProgress,
+                    userScrollEnabled
+                )
+            }
+        }
+        LazyColumn(modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 200.dp)){
+            item{
+                Text(text = "hello my friend")
+            }
+            item{
+                Text(text = "hello my friend")
+            }
+            item{
+                Text(text = "hello my friend")
+            }
+            item{
+                Text(text = "hello my friend")
+            }
+            item{
+                Text(text = "hello my friend")
+            }
+            item {
+                Text(text = "hello my friend")
+            }
         }
     }
 }

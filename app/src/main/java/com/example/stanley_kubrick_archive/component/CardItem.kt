@@ -111,56 +111,35 @@ fun MovieItem(
         label = "CardRotationOnSelection"
     )
 
-    LazyColumn(modifier = Modifier.height((movieCard.cardHeight).dp)) {
-        item {
-
-
-            Card(
-                modifier = Modifier
-                    .height((movieCard.cardHeight).dp)
-                    .fillMaxWidth()
-                    .graphicsLayer {
-                        rotationX =
-                            -dynamicRotation
-                        cameraDistance = movieCard.cardCameraDistance
-                        translationY = dynamicTransitionY
-                    }
-                    .clickable {
-                        GlobalScope.launch(Dispatchers.Main) {
-                            if (selectedCard.value == null) {
-                                selectedCard.value = index
-                                userScrollEnabled.value = false
-                            } else {
-                                selectedCard.value = null
-                                animationInProgress.value = true
-                                delay(movieCard.cardSelectionAnimationDuration)
-                                animationInProgress.value = false
-                                userScrollEnabled.value = true
-                            }
-                        }
-                    }
-                    .offset(y = animatedOffset),
-            ) {
-                CardContent(movieCard)
+    Card(
+        modifier = Modifier
+            .height((movieCard.cardHeight).dp)
+            .fillMaxWidth()
+            .graphicsLayer {
+                rotationX =
+                    -dynamicRotation
+                cameraDistance = movieCard.cardCameraDistance
+                translationY = dynamicTransitionY
             }
-        }
-        item {
-            AnimatedVisibility(visible = selectedCard.value == index) {
-                Card(
-                    modifier = Modifier
-                        .height((movieCard.cardHeight).dp)
-                        .fillMaxWidth()
-                ) {
-                    CardContent(movieCard)
-                }
-                Card(
-                    modifier = Modifier
-                        .height((movieCard.cardHeight).dp)
-                        .fillMaxWidth()
-                ) {
-                    CardContent(movieCard)
+            .clickable {
+                GlobalScope.launch(Dispatchers.Main) {
+                    if (selectedCard.value == null) {
+                        selectedCard.value = index
+                        userScrollEnabled.value = false
+                    } else {
+                        selectedCard.value = null
+                        animationInProgress.value = true
+                        delay(movieCard.cardSelectionAnimationDuration)
+                        animationInProgress.value = false
+                        userScrollEnabled.value = true
+                    }
                 }
             }
-        }
+            .offset(y = animatedOffset),
+    ) {
+        CardContent(movieCard)
     }
 }
+
+
+
