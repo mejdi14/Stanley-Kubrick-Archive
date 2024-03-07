@@ -101,7 +101,6 @@ fun MoviesCardsList(items: List<MovieCard>) {
               list.add("hello")
         }
         }
-
     }
 }
 
