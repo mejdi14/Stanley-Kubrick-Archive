@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -30,6 +31,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.PointerInputScope
+import androidx.compose.ui.input.pointer.consumeAllChanges
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
@@ -39,6 +43,7 @@ import com.example.stanley_kubrick_archive.component.ToolbarWithTextAndIcon
 import com.example.stanley_kubrick_archive.data.MovieCard
 import com.example.stanley_kubrick_archive.data.movieList
 import com.example.stanley_kubrick_archive.ui.theme.StanleyKubrickArchiveTheme
+import kotlin.math.abs
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,6 +105,34 @@ fun MoviesCardsList(items: List<MovieCard>) {
             for(i in 1..100){
               list.add("hello")
         }
+            LazyColumn(modifier =  Modifier.pointerInput(Unit) {
+                detectVerticalSwipeGestures(onSwipeUp = {
+                    println("Swiped Up")
+                }, onSwipeDown = {
+                    println("Swiped Down")
+                })
+            }
+                .padding(top = 200.dp)){
+                items(list){
+                    Text("Hello this is the line $it", color = Color.White)
+                }
+            }
+        }
+    }
+}
+
+suspend fun PointerInputScope.detectVerticalSwipeGestures(
+    onSwipeUp: () -> Unit,
+    onSwipeDown: () -> Unit
+) {
+    detectDragGestures { change, dragAmount ->
+        change.consumeAllChanges()
+        if (abs(dragAmount.y) > abs(dragAmount.x)) { // Detect vertical movement
+            if (dragAmount.y < 0) {
+                onSwipeUp()
+            } else {
+                onSwipeDown()
+            }
         }
     }
 }

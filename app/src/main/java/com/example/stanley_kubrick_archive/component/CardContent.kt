@@ -9,7 +9,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import com.example.stanley_kubrick_archive.data.MovieCard
 
-
 @Composable
 fun CardContent(item: MovieCard) {
     Surface(
