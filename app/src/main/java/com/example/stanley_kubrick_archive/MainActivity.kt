@@ -9,6 +9,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.shrinkOut
@@ -22,6 +24,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -58,6 +61,7 @@ import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import com.example.stanley_kubrick_archive.component.BottomGradientLayer
@@ -126,32 +130,41 @@ fun MoviesCardsList(items: List<MovieCard>) {
             }
         }
         //DetailsMovie(selectedCard, listState)
-
+        ExpandingCard()
     }
 }
 
 @Composable
 fun ExpandingCard() {
     var isExpanded by remember { mutableStateOf(false) }
-    val transition = updateTransition(targetState = isExpanded, label = "cardTransition")
-    val cardSize = animateDpAsState(targetValue = if (isExpanded) 120.dp else 240.dp, label = "cardSize")
-    val cardPadding = animateDpAsState(targetValue = if (isExpanded) 8.dp else 0.dp, label = "cardPadding")
+    val transition = updateTransition(targetState = isExpanded, label = "cardTransition", )
+    val cardSize = animateDpAsState(targetValue = if (isExpanded) 120.dp else 240.dp, label = "cardSize", animationSpec = tween<Dp>(
+        durationMillis = 3000, // 3 seconds for a slower animation
+        easing = LinearEasing // This is optional; adjust the easing function as needed
+    ) )
+    val cardPadding = animateDpAsState(targetValue = if (isExpanded) 8.dp else 0.dp, label = "cardPadding", animationSpec = tween<Dp>(
+        durationMillis = 3000, // 3 seconds for a slower animation
+        easing = LinearEasing // This is optional; adjust the easing function as needed
+    ))
 
     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier
             .clickable { isExpanded = !isExpanded }
             .padding(all = cardPadding.value)
 
-            .width(cardSize.value)
             .animateContentSize(),
             horizontalAlignment = Alignment.CenterHorizontally) {
 
             if (isExpanded) {
                 // Show 4 smaller cards
-                SmallCard(imageRes = R.drawable.clockwork_orange)
+                Row {
+                    SmallCard(imageRes = R.drawable.clockwork_orange)
                 SmallCard(imageRes = R.drawable.bary)
-                SmallCard(imageRes = R.drawable.shining)
-                SmallCard(imageRes = R.drawable.i)
+                }
+                Row {
+                    SmallCard(imageRes = R.drawable.shining)
+                    SmallCard(imageRes = R.drawable.i)
+                }
             } else {
                 // Show the main large card
                 Card(modifier = Modifier.size(cardSize.value)) {
