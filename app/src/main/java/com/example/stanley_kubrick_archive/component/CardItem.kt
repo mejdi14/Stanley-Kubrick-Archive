@@ -126,7 +126,7 @@ fun MovieItem(
             }
             .offset(y = animatedOffset),
     ) {
-        CardContent(movieCard)
+        CardContent(movieCard, selectedCard)
     }
 }
 
