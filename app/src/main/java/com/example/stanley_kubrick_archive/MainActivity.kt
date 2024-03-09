@@ -3,25 +3,39 @@ package com.example.stanley_kubrick_archive
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.updateTransition
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.shrinkOut
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,7 +55,9 @@ import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.input.pointer.positionChange
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import com.example.stanley_kubrick_archive.component.BottomGradientLayer
@@ -109,80 +125,150 @@ fun MoviesCardsList(items: List<MovieCard>) {
                 )
             }
         }
-        AnimatedVisibility(visible = selectedCard.value != null) {
-            val stateList = rememberLazyListState()
-            val subListScrollEnabled = remember { mutableStateOf<Boolean>(false) }
-            val coroutineScope = rememberCoroutineScope()
-            var initialPadding by remember {
-                mutableStateOf(
-                    MovieCard(
-                        1,
-                        "",
-                        ""
-                    ).crossPathHeight + 90f
-                )
-            }
-            val list = mutableListOf<String>()
-            for (i in 1..100) {
-                list.add("hello")
-            }
-            Box(modifier = Modifier
-                .pointerInput(Unit) {
-                    detectVerticalSwipeGestures(
-                        onSwipeUp = {
-                            if ((initialPadding + it) >= 0)
-                                initialPadding += it
-                            else
-                                subListScrollEnabled.value = true
-                        },
-                        onSwipeDown = {
-                            if (listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0)
-                                initialPadding += it
-                        },
+        //DetailsMovie(selectedCard, listState)
+
+    }
+}
+
+@Composable
+fun ExpandingCard() {
+    var isExpanded by remember { mutableStateOf(false) }
+    val transition = updateTransition(targetState = isExpanded, label = "cardTransition")
+    val cardSize = animateDpAsState(targetValue = if (isExpanded) 120.dp else 240.dp, label = "cardSize")
+    val cardPadding = animateDpAsState(targetValue = if (isExpanded) 8.dp else 0.dp, label = "cardPadding")
+
+    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier
+            .clickable { isExpanded = !isExpanded }
+            .padding(all = cardPadding.value)
+
+            .width(cardSize.value)
+            .animateContentSize(),
+            horizontalAlignment = Alignment.CenterHorizontally) {
+
+            if (isExpanded) {
+                // Show 4 smaller cards
+                SmallCard(imageRes = R.drawable.clockwork_orange)
+                SmallCard(imageRes = R.drawable.bary)
+                SmallCard(imageRes = R.drawable.shining)
+                SmallCard(imageRes = R.drawable.i)
+            } else {
+                // Show the main large card
+                Card(modifier = Modifier.size(cardSize.value)) {
+                    Image(
+                        painter = painterResource(R.drawable.eyes_wide_shut),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
                     )
                 }
-                .padding(top = (initialPadding).dp)
-            ) {
-                LazyColumn(modifier = Modifier
-                    .pointerInput(Unit) {
-                        detectVerticalDragGestures { change, dragAmount ->
-                            if (((initialPadding + dragAmount) >= 0) && ((initialPadding + dragAmount) < 500)) {
-                                subListScrollEnabled.value = false
-                                initialPadding += dragAmount
-                            } else
-                                subListScrollEnabled.value = true
-                            coroutineScope.launch {
-                                // Your action here, e.g., refreshing content
-                                Log.d("TAG", "subListScrollEnabled: ")
-                            }
-                        }
-                        detectVerticalSwipeGestures(
-                            onSwipeDown = {
-                                Log.d("TAG", "onSwipeDown: ")
-                            },
-                            onSwipeUp = {
-                                Log.d("TAG", "onSwipeUp: ")
-                            }
-                        )
+            }
+        }
+    }
+}
 
-                    }
-                    .pointerInteropFilter { motionEvent ->
-                        if (listState.firstVisibleItemIndex == 0) {
-                            // The logic inside here will depend on how you're detecting the swipe down gesture.
-                            // For simplicity, let's say any downward motion triggers the action:
-                            // You can refine this by tracking motion events more precisely.
-                            coroutineScope.launch {
-                                // Your action here, e.g., refreshing content
-                            }
-                        }
-                        false // Return false to indicate the event was not consumed, allowing for normal scrolling behavior
+@Composable
+fun SmallCard(imageRes: Int) {
+    Card(
+        modifier = Modifier
+            .padding(4.dp)
+            .size(100.dp),
+
+    ) {
+        AnimatedVisibility(
+            visible = true,
+            enter = expandIn(),
+            exit = shrinkOut()
+        ) {
+            Image(
+                painter = painterResource(imageRes),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+        }
+    }
+}
+
+@Composable
+@OptIn(ExperimentalComposeUiApi::class)
+private fun DetailsMovie(
+    selectedCard: MutableState<Int?>,
+    listState: LazyListState
+) {
+    AnimatedVisibility(visible = selectedCard.value != null) {
+        val stateList = rememberLazyListState()
+        val subListScrollEnabled = remember { mutableStateOf<Boolean>(false) }
+        val coroutineScope = rememberCoroutineScope()
+        var initialPadding by remember {
+            mutableStateOf(
+                MovieCard(
+                    1,
+                    "",
+                    ""
+                ).crossPathHeight + 90f
+            )
+        }
+        val list = mutableListOf<String>()
+        for (i in 1..100) {
+            list.add("hello")
+        }
+        Box(modifier = Modifier
+            .pointerInput(Unit) {
+                detectVerticalSwipeGestures(
+                    onSwipeUp = {
+                        if ((initialPadding + it) >= 0)
+                            initialPadding += it
+                        else
+                            subListScrollEnabled.value = true
                     },
-                    userScrollEnabled = subListScrollEnabled.value,
-                    state = stateList
-                ) {
-                    items(list) {
-                        Text("Hello this is the line $it", color = Color.White)
+                    onSwipeDown = {
+                        if (listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0)
+                            initialPadding += it
+                    },
+                )
+            }
+            .padding(top = (initialPadding).dp)
+        ) {
+            LazyColumn(modifier = Modifier
+                .pointerInput(Unit) {
+                    detectVerticalDragGestures { change, dragAmount ->
+                        if (((initialPadding + dragAmount) >= 0) && ((initialPadding + dragAmount) < 500)) {
+                            subListScrollEnabled.value = false
+                            initialPadding += dragAmount
+                        } else
+                            subListScrollEnabled.value = true
+                        coroutineScope.launch {
+                            // Your action here, e.g., refreshing content
+                            Log.d("TAG", "subListScrollEnabled: ")
+                        }
                     }
+                    detectVerticalSwipeGestures(
+                        onSwipeDown = {
+                            Log.d("TAG", "onSwipeDown: ")
+                        },
+                        onSwipeUp = {
+                            Log.d("TAG", "onSwipeUp: ")
+                        }
+                    )
+
+                }
+                .pointerInteropFilter { motionEvent ->
+                    if (listState.firstVisibleItemIndex == 0) {
+                        // The logic inside here will depend on how you're detecting the swipe down gesture.
+                        // For simplicity, let's say any downward motion triggers the action:
+                        // You can refine this by tracking motion events more precisely.
+                        coroutineScope.launch {
+                            // Your action here, e.g., refreshing content
+                        }
+                    }
+                    false // Return false to indicate the event was not consumed, allowing for normal scrolling behavior
+                },
+                userScrollEnabled = subListScrollEnabled.value,
+                state = stateList
+            ) {
+                items(list) {
+                    Text("Hello this is the line $it", color = Color.White)
                 }
             }
         }
