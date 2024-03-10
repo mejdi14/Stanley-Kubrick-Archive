@@ -19,37 +19,15 @@ import androidx.compose.ui.res.painterResource
 import com.example.stanley_kubrick_archive.R
 import com.example.stanley_kubrick_archive.data.MovieCard
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun CardContent(item: MovieCard, selectedCard: MutableState<Int?>) {
     Surface(modifier = Modifier.fillMaxSize()) {
-        AnimatedContent(
-            targetState = selectedCard.value,
-            transitionSpec = {
-                slideIntoContainer(
-                    animationSpec = tween(durationMillis = 3000, easing = EaseIn),
-                    towards = AnimatedContentScope.SlideDirection.Down
-                ).with(slideOutOfContainer(
-                    animationSpec = tween(durationMillis = 3000, easing = EaseIn),
-                    towards = AnimatedContentScope.SlideDirection.Down
-                ))
-            }, label = ""
-        ) { targetState ->
-            when (targetState) {
-                null -> Image(
-                    painter = painterResource(id = R.drawable.clockwork_orange),
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.FillBounds
-                )
-                else -> Image(
-                    painter = painterResource(id = item.image),
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.FillBounds
-                )
-            }
-        }
+        Image(
+            painter = painterResource(id = item.image),
+            contentDescription = "main card image",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.FillBounds
+        )
     }
 }
 

@@ -14,6 +14,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.shrinkOut
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,6 +27,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -34,6 +37,9 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Text
@@ -90,7 +96,7 @@ class MainActivity : ComponentActivity() {
                         getString(R.string.toolbar_title),
                         R.drawable.baseline_search_20
                     )
-                    BottomGradientLayer(Modifier.align(Alignment.BottomStart))
+                    //BottomGradientLayer(Modifier.align(Alignment.BottomStart))
                 }
             }
         }
@@ -104,7 +110,7 @@ private fun HomeScreen(items: List<MovieCard>) {
 }
 
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun MoviesCardsList(items: List<MovieCard>) {
     val listState = rememberLazyListState()
@@ -116,7 +122,7 @@ fun MoviesCardsList(items: List<MovieCard>) {
             modifier = Modifier.padding(horizontal = 30.dp),
             state = listState,
             verticalArrangement = Arrangement.spacedBy((-124).dp),
-            userScrollEnabled = userScrollEnabled.value
+            userScrollEnabled = userScrollEnabled.value,
         ) {
             itemsIndexed(items) { index, item ->
                 MovieItem(
@@ -130,7 +136,51 @@ fun MoviesCardsList(items: List<MovieCard>) {
             }
         }
         //DetailsMovie(selectedCard, listState)
-        ExpandingCard()
+        //ExpandingCard()
+        val pagerState = rememberPagerState()
+        Column( modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 300.dp)) {
+            HorizontalPager(
+                pageCount = 3,
+                state = pagerState,
+                modifier = Modifier
+                    .weight(1f).fillMaxWidth()
+            ) {
+
+                    page ->
+                // Your page content
+                Box(
+                    modifier = Modifier.fillMaxSize()
+                        .background(Color(0xFF, 0x80 * (page + 1), 0x80)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = "Page $page", color = Color.White)
+                }
+            }
+            PagerIndicator(
+                pagerState = pagerState,
+                pageCount = 3,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+        }
+
+
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun PagerIndicator(pagerState: PagerState, pageCount: Int, modifier: Modifier = Modifier) {
+    Row(modifier = modifier) {
+        repeat(pageCount) { index ->
+            Box(
+                modifier = Modifier
+                    .size(if (pagerState.currentPage == index) 10.dp else 8.dp)
+                    .background(if (pagerState.currentPage == index) Color.Red else Color.Gray)
+                    .padding(horizontal = 4.dp)
+            )
+        }
     }
 }
 
@@ -167,7 +217,7 @@ fun ExpandingCard() {
                 }
             } else {
                 // Show the main large card
-                Card(modifier = Modifier.size(cardSize.value)) {
+                Card(modifier = Modifier.size(240.dp)) {
                     Image(
                         painter = painterResource(R.drawable.eyes_wide_shut),
                         contentDescription = null,
@@ -216,7 +266,6 @@ private fun DetailsMovie(
         var initialPadding by remember {
             mutableStateOf(
                 MovieCard(
-                    1,
                     "",
                     ""
                 ).crossPathHeight + 90f
