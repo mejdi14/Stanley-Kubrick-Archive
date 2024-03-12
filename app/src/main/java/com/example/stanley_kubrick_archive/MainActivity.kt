@@ -96,7 +96,7 @@ class MainActivity : ComponentActivity() {
                         getString(R.string.toolbar_title),
                         R.drawable.baseline_search_20
                     )
-                    //BottomGradientLayer(Modifier.align(Alignment.BottomStart))
+                    BottomGradientLayer(Modifier.align(Alignment.BottomStart))
                 }
             }
         }
@@ -138,34 +138,37 @@ fun MoviesCardsList(items: List<MovieCard>) {
         //DetailsMovie(selectedCard, listState)
         //ExpandingCard()
         val pagerState = rememberPagerState()
-        Column( modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 300.dp)) {
-            HorizontalPager(
-                pageCount = 3,
-                state = pagerState,
+        AnimatedVisibility(visible = selectedCard.value != null) {
+            Column(
                 modifier = Modifier
-                    .weight(1f).fillMaxWidth()
+                    .fillMaxSize()
+                    .padding(top = 300.dp)
             ) {
-
-                    page ->
-                // Your page content
-                Box(
-                    modifier = Modifier.fillMaxSize()
-                        .background(Color(0xFF, 0x80 * (page + 1), 0x80)),
-                    contentAlignment = Alignment.Center
+                HorizontalPager(
+                    pageCount = 3,
+                    state = pagerState,
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
                 ) {
-                    Text(text = "Page $page", color = Color.White)
+
+                        page ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color(0xFF, 0x80 * (page + 1), 0x80)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(text = "Page $page", color = Color.White)
+                    }
                 }
+                PagerIndicator(
+                    pagerState = pagerState,
+                    pageCount = 3,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
             }
-            PagerIndicator(
-                pagerState = pagerState,
-                pageCount = 3,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
         }
-
-
     }
 }
 
