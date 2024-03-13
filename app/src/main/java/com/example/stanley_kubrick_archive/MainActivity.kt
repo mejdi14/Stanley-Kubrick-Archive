@@ -320,11 +320,8 @@ private fun DetailsMovie(
                 }
                 .pointerInteropFilter { motionEvent ->
                     if (listState.firstVisibleItemIndex == 0) {
-                        // The logic inside here will depend on how you're detecting the swipe down gesture.
-                        // For simplicity, let's say any downward motion triggers the action:
-                        // You can refine this by tracking motion events more precisely.
+
                         coroutineScope.launch {
-                            // Your action here, e.g., refreshing content
                         }
                     }
                     false // Return false to indicate the event was not consumed, allowing for normal scrolling behavior
