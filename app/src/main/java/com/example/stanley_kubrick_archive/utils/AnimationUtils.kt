@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.stanley_kubrick_archive.data.MovieCard
@@ -24,6 +25,12 @@ fun pxToDp(px: Float, context: Context): Float {
         px,
         context.resources.displayMetrics
     )
+}
+
+@Composable
+fun convertDpToPx(dp: Dp): Float {
+    val density = LocalDensity.current
+    return with(density) { dp.toPx() }
 }
 
 fun dpToPx(dp: Float, context: Context): Float {
