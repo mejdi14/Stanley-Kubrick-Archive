@@ -209,7 +209,6 @@ fun ExpandingCard() {
             horizontalAlignment = Alignment.CenterHorizontally) {
 
             if (isExpanded) {
-                // Show 4 smaller cards
                 Row {
                     SmallCard(imageRes = R.drawable.clockwork_orange)
                 SmallCard(imageRes = R.drawable.bary)
@@ -219,7 +218,6 @@ fun ExpandingCard() {
                     SmallCard(imageRes = R.drawable.i)
                 }
             } else {
-                // Show the main large card
                 Card(modifier = Modifier.size(240.dp)) {
                     Image(
                         painter = painterResource(R.drawable.eyes_wide_shut),
@@ -256,100 +254,6 @@ fun SmallCard(imageRes: Int) {
     }
 }
 
-@Composable
-@OptIn(ExperimentalComposeUiApi::class)
-private fun DetailsMovie(
-    selectedCard: MutableState<Int?>,
-    listState: LazyListState
-) {
-    AnimatedVisibility(visible = selectedCard.value != null) {
-        val stateList = rememberLazyListState()
-        val subListScrollEnabled = remember { mutableStateOf<Boolean>(false) }
-        val coroutineScope = rememberCoroutineScope()
-        var initialPadding by remember {
-            mutableStateOf(
-                MovieCard(
-                    "",
-                    ""
-                ).crossPathHeight + 90f
-            )
-        }
-        val list = mutableListOf<String>()
-        for (i in 1..100) {
-            list.add("hello")
-        }
-        Box(modifier = Modifier
-            .pointerInput(Unit) {
-                detectVerticalSwipeGestures(
-                    onSwipeUp = {
-                        if ((initialPadding + it) >= 0)
-                            initialPadding += it
-                        else
-                            subListScrollEnabled.value = true
-                    },
-                    onSwipeDown = {
-                        if (listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0)
-                            initialPadding += it
-                    },
-                )
-            }
-            .padding(top = (initialPadding).dp)
-        ) {
-            LazyColumn(modifier = Modifier
-                .pointerInput(Unit) {
-                    detectVerticalDragGestures { change, dragAmount ->
-                        if (((initialPadding + dragAmount) >= 0) && ((initialPadding + dragAmount) < 500)) {
-                            subListScrollEnabled.value = false
-                            initialPadding += dragAmount
-                        } else
-                            subListScrollEnabled.value = true
-                        coroutineScope.launch {
-                            // Your action here, e.g., refreshing content
-                            Log.d("TAG", "subListScrollEnabled: ")
-                        }
-                    }
-                    detectVerticalSwipeGestures(
-                        onSwipeDown = {
-                            Log.d("TAG", "onSwipeDown: ")
-                        },
-                        onSwipeUp = {
-                            Log.d("TAG", "onSwipeUp: ")
-                        }
-                    )
-
-                }
-                .pointerInteropFilter { motionEvent ->
-                    if (listState.firstVisibleItemIndex == 0) {
-
-                        coroutineScope.launch {
-                        }
-                    }
-                    false // Return false to indicate the event was not consumed, allowing for normal scrolling behavior
-                },
-                userScrollEnabled = subListScrollEnabled.value,
-                state = stateList
-            ) {
-                items(list) {
-                    Text("Hello this is the line $it", color = Color.White)
-                }
-            }
-        }
-    }
-}
-
-suspend fun Modifier.pointerInput(listState: LazyListState, detectSwipeDownGesture: suspend () -> Unit) = this.then(
-    Modifier.pointerInput(listState) {
-        awaitPointerEventScope {
-            while (true) {
-                val event = awaitPointerEvent()
-                val dragAmount = event.changes.first().positionChange().y
-                if (dragAmount > 0) { // Detecting swipe down
-                }
-            }
-        }
-    }
-)
-
 suspend fun PointerInputScope.detectVerticalSwipeGestures(
     onSwipeUp: (dragAmount: Float) -> Unit,
     onSwipeDown: (dragAmount: Float) -> Unit,
@@ -361,96 +265,6 @@ suspend fun PointerInputScope.detectVerticalSwipeGestures(
                 onSwipeUp(dragAmount.y)
             } else {
                 onSwipeDown(dragAmount.y)
-            }
-        }
-    }
-}
-
-
-@Composable
-fun AdjustablePaddingLazyColumn(list: List<String>) {
-    val stateList = rememberLazyListState()
-    val density = LocalDensity.current
-
-    // Mutable state to track and update padding dynamically
-    var topPadding by remember { mutableStateOf(200.dp) }
-    val minTopPadding = 0.dp
-    val maxTopPadding = 200.dp
-
-    // Convert dp values to pixels for comparison and calculation
-    val maxTopPaddingPx = with(density) { maxTopPadding.toPx() }
-    val minTopPaddingPx = with(density) { minTopPadding.toPx() }
-
-    // Custom NestedScrollConnection to intercept scroll events
-    val nestedScrollConnection = remember {
-        object : NestedScrollConnection {
-            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                val delta = available.y
-
-                // Use the captured density to convert Dp to Px and vice versa
-                val newPaddingPx = with(density) { topPadding.toPx() } - delta
-                topPadding = with(density) {
-                    newPaddingPx.coerceIn(with(density) { minTopPadding.toPx() },
-                        with(density) { maxTopPadding.toPx() }).toDp()
-                }
-
-                // Adjust logic as needed to determine when to absorb scroll
-                return if (topPadding > minTopPadding) Offset.Zero else available
-            }
-        }
-    }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(nestedScrollConnection)
-            .background(Color.Black) // Just to make the text visible assuming a dark theme
-    ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = topPadding),
-            state = stateList
-        ) {
-            items(list) {
-                Text("Hello this is the line $it", color = Color.White)
-            }
-        }
-    }
-}
-
-@Composable
-fun ShrinkingPaddingLazyColumn() {
-    val listState = rememberLazyListState()
-    val maxTopPadding = 200.dp
-    val minTopPadding = 0.dp
-
-    // Calculate the dynamic top padding based on scroll position
-    val topPadding by remember {
-        derivedStateOf {
-            // Calculate the ratio of scroll position to the total padding amount
-            val scrollOffset = listState.firstVisibleItemScrollOffset.toFloat()
-            val firstVisibleItemIndex = listState.firstVisibleItemIndex
-
-            if (firstVisibleItemIndex > 0) {
-                // If we've scrolled past the first item, no more padding is needed
-                minTopPadding
-            } else {
-                // Calculate dynamic padding
-                max(minTopPadding, maxTopPadding - (scrollOffset / 1000).dp)
-            }
-        }
-    }
-
-    BoxWithConstraints {
-        LazyColumn(
-            state = listState,
-            contentPadding = PaddingValues(top = topPadding),
-            modifier = Modifier.padding(top = topPadding)
-        ) {
-            items(100) { index ->
-                // Your item content
-                Text(text = "Item $index")
             }
         }
     }
