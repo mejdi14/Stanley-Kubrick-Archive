@@ -19,7 +19,7 @@ fun ActorCardItem(imageRes: Int) {
     Card(
         modifier = Modifier
             .padding(4.dp)
-            .size(100.dp),
+            .size(120.dp),
 
         ) {
         AnimatedVisibility(
