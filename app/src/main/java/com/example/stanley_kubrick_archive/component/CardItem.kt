@@ -1,5 +1,7 @@
 package com.example.stanley_kubrick_archive.component
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.Spring
@@ -7,14 +9,15 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -27,14 +30,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.stanley_kubrick_archive.R
@@ -47,7 +46,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@OptIn(DelicateCoroutinesApi::class, ExperimentalFoundationApi::class)
+@OptIn(DelicateCoroutinesApi::class, ExperimentalFoundationApi::class,
+    ExperimentalAnimationApi::class
+)
 @Composable
 fun MovieItem(
     movieCard: MovieCard,
@@ -154,14 +155,23 @@ fun MovieItem(
             .animateContentSize(),
             horizontalAlignment = Alignment.CenterHorizontally) {
 
-            if (pagerState.currentPage > 0) {
-                Row {
-                    ActorCardItem(imageRes = R.drawable.clockwork_orange)
-                    ActorCardItem(imageRes = R.drawable.bary)
-                }
-                Row {
-                    ActorCardItem(imageRes = R.drawable.shining)
-                    ActorCardItem(imageRes = R.drawable.i)
+            if (pagerState.currentPage > 0 && selectedCard.value == index) {
+                val modifier = Modifier.size(((movieCard.cardHeight / 2 ) - (4 * 3)).dp).padding(4.dp)
+                AnimatedVisibility(
+                    visible = true,
+                    enter = fadeIn() + scaleIn(initialScale = 0.8f),
+                    exit = fadeOut() + scaleOut(targetScale = 0.8f)
+                ) {
+                    Column {
+                        Row {
+                            ActorCardItem(imageRes = R.drawable.clockwork_orange, modifier)
+                            ActorCardItem(imageRes = R.drawable.bary, modifier)
+                        }
+                        Row {
+                            ActorCardItem(imageRes = R.drawable.shining, modifier)
+                            ActorCardItem(imageRes = R.drawable.i, modifier)
+                        }
+                    }
                 }
             } else {
                 Card(
@@ -174,22 +184,3 @@ fun MovieItem(
         }
     }
 }
-
-@Composable
-fun ExpandingCard() {
-    var isExpanded by remember { mutableStateOf(false) }
-    val transition = updateTransition(targetState = isExpanded, label = "cardTransition", )
-    val cardSize = animateDpAsState(targetValue = if (isExpanded) 120.dp else 240.dp, label = "cardSize", animationSpec = tween<Dp>(
-        durationMillis = 3000,
-        easing = LinearEasing
-    ) )
-    val cardPadding = animateDpAsState(targetValue = if (isExpanded) 8.dp else 0.dp, label = "cardPadding", animationSpec = tween<Dp>(
-        durationMillis = 3000,
-        easing = LinearEasing
-    ))
-
-
-}
-
-
-

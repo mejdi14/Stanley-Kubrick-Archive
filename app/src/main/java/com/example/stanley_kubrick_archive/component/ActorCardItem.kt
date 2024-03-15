@@ -15,11 +15,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ActorCardItem(imageRes: Int) {
+fun ActorCardItem(imageRes: Int, modifier: Modifier) {
     Card(
-        modifier = Modifier
-            .padding(4.dp)
-            .size(120.dp),
+        modifier = modifier,
 
         ) {
         AnimatedVisibility(

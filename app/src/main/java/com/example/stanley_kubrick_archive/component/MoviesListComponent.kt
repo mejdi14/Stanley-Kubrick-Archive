@@ -59,7 +59,7 @@ fun MoviesCardsList(items: List<MovieCard>, selectedCard: MutableState<Int?>) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 300.dp)
+                    .padding(top = 400.dp)
             ) {
                 MovieDescriptionPager(pagerState, Modifier.Companion.weight(1f))
                 PagerIndicator(
