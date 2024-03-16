@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.Card
@@ -46,7 +47,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@OptIn(DelicateCoroutinesApi::class, ExperimentalFoundationApi::class,
+@OptIn(
+    DelicateCoroutinesApi::class, ExperimentalFoundationApi::class,
     ExperimentalAnimationApi::class
 )
 @Composable
@@ -120,43 +122,56 @@ fun MovieItem(
         label = "CardRotationOnSelection"
     )
 
-    val cardPadding = animateDpAsState(targetValue = if (pagerState.currentPage > 0) 8.dp else 0.dp, label = "cardPadding", animationSpec = tween<Dp>(
-        durationMillis = 3000,
-        easing = LinearEasing
-    ))
+    val cardPadding = animateDpAsState(
+        targetValue = if (pagerState.currentPage > 0) 8.dp else 0.dp,
+        label = "cardPadding",
+        animationSpec = tween<Dp>(
+            durationMillis = 3000,
+            easing = LinearEasing
+        )
+    )
 
-    Box(contentAlignment = Alignment.Center, modifier = Modifier
-        .height((movieCard.cardHeight).dp)
-        .fillMaxWidth()
-        .graphicsLayer {
-            rotationX =
-                -dynamicRotation
-            cameraDistance = movieCard.cardCameraDistance
-            translationY = dynamicTransitionY
-        }
-        .clickable {
-            GlobalScope.launch(Dispatchers.Main) {
-                if (selectedCard.value == null) {
-                    selectedCard.value = index
-                    userScrollEnabled.value = false
-                } else {
-                    selectedCard.value = null
-                    animationInProgress.value = true
-                    delay(movieCard.cardSelectionAnimationDuration)
-                    animationInProgress.value = false
-                    userScrollEnabled.value = true
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .height((movieCard.cardHeight).dp)
+            .fillMaxWidth()
+            .graphicsLayer {
+                rotationX =
+                    -dynamicRotation
+                cameraDistance = movieCard.cardCameraDistance
+                translationY = dynamicTransitionY
+            }
+            .clickable {
+                GlobalScope.launch(Dispatchers.Main) {
+                    if (selectedCard.value == null) {
+                        selectedCard.value = index
+                        userScrollEnabled.value = false
+                    } else {
+                        selectedCard.value = null
+                        animationInProgress.value = true
+                        delay(movieCard.cardSelectionAnimationDuration)
+                        animationInProgress.value = false
+                        userScrollEnabled.value = true
+                    }
                 }
             }
-        }
-        .offset(y = animatedOffset),) {
-        Column(modifier = Modifier
-            .padding(all = cardPadding.value)
+            .offset(y = animatedOffset),
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(all = cardPadding.value)
 
-            .animateContentSize(),
-            horizontalAlignment = Alignment.CenterHorizontally) {
+                .animateContentSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
             if (pagerState.currentPage > 0 && selectedCard.value == index) {
-                val modifier = Modifier.size(((movieCard.cardHeight / 2 ) - (4 * 3)).dp).padding(4.dp)
+                val modifier =
+                    Modifier
+                        .height(((movieCard.cardHeight / 2) - (4 * 3)).dp)
+                        .padding(4.dp)
+                        .width(((movieCard.cardHeight / 3) - (4 * 4)).dp)
                 AnimatedVisibility(
                     visible = true,
                     enter = fadeIn() + scaleIn(initialScale = 0.8f),
@@ -164,12 +179,14 @@ fun MovieItem(
                 ) {
                     Column {
                         Row {
-                            ActorCardItem(imageRes = R.drawable.clockwork_orange, modifier)
-                            ActorCardItem(imageRes = R.drawable.bary, modifier)
+                            ActorCardItem(imageRes = movieCard.listActors[0].image, modifier)
+                            ActorCardItem(imageRes = movieCard.listActors[1].image, modifier)
+                            ActorCardItem(imageRes = movieCard.listActors[2].image, modifier)
                         }
                         Row {
-                            ActorCardItem(imageRes = R.drawable.shining, modifier)
-                            ActorCardItem(imageRes = R.drawable.i, modifier)
+                            ActorCardItem(imageRes = movieCard.listActors[3].image, modifier)
+                            ActorCardItem(imageRes = movieCard.listActors[4].image, modifier)
+                            ActorCardItem(imageRes = movieCard.listActors[5].image, modifier)
                         }
                     }
                 }
