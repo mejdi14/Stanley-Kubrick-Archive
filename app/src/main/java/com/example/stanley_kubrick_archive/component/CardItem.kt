@@ -161,7 +161,7 @@ fun MovieItem(
         Column(
             modifier = Modifier
                 .padding(all = cardPadding.value)
-
+                .fillMaxWidth()
                 .animateContentSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

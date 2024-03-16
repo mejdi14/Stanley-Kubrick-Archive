@@ -19,57 +19,80 @@ data class MovieCard(
     val cardSelectionAnimationDuration: Long = 1000,
     val cardCameraDistance: Float = 33f,
     val listActors: List<MovieActor> = listOf(),
+    val listDescription: List<MovieDescription> = listOf(),
     val id: String = UUID.randomUUID().toString(),
 )
 
 val movieList = listOf(
     MovieCard(
         "Title 1", "Description 1", image = R.drawable.clockwork_orange,
-        listActors = clockWorkOrangeActors
+        listActors = clockWorkOrangeActors, listDescription = clockWorkOrangeDescription
     ),
-    MovieCard("Title 1", "Description 1", image = R.drawable.bary, listActors = baryActors),
+    MovieCard(
+        "Title 1",
+        "Description 1",
+        image = R.drawable.bary,
+        listActors = baryActors,
+        listDescription = baryDescription
+    ),
     MovieCard(
         "Title 1",
         "Description 1",
         image = R.drawable.space_odyssy,
-        listActors = spaceOdysseyActors
+        listActors = spaceOdysseyActors,
+        listDescription = spaceOdysseyDescription
     ),
     MovieCard(
         "Title 1",
         "Description 1",
         image = R.drawable.metal_jacket,
-        listActors = metalJacketActors
+        listActors = metalJacketActors,
+        listDescription = metalJacketDescription
     ),
-    MovieCard("Title 1", "Description 1", image = R.drawable.shining, listActors = shiningActors),
+    MovieCard(
+        "Title 1",
+        "Description 1",
+        image = R.drawable.shining,
+        listActors = shiningActors,
+        listDescription = shiningDescription
+    ),
     MovieCard(
         "Title 1",
         "Description 1",
         image = R.drawable.paths_of_glory,
-        listActors = pathOfGloryActors
+        listActors = pathOfGloryActors,
+        listDescription = pathOfGloryDescription
     ),
     MovieCard(
         "Title 1",
         "Description 1",
         image = R.drawable.dr_strangelove,
-        listActors = strangeLoveActors
+        listActors = strangeLoveActors,
+        listDescription = strangeLoveDescription
     ),
     MovieCard(
         "Title 1",
         "Description 1",
         image = R.drawable.spartacus,
-        listActors = spartacusActors
+        listActors = spartacusActors,
+        listDescription = spartacusDescription
     ),
     MovieCard(
         "Title 1",
         "Description 1",
         image = R.drawable.the_killing_poster,
-        listActors = theKillingActors
+        listActors = theKillingActors,
+        listDescription = theKillingDescription
     ),
     MovieCard(
         "Title 1",
         "Description 1",
         image = R.drawable.eyes_wide_shut,
-        listActors = eyesWideShutActors
+        listActors = eyesWideShutActors,
+        listDescription = eyesWideShutDescription
     ),
-    MovieCard("Title 1", "Description 1", image = R.drawable.lolita, listActors = lolitaActors),
+    MovieCard(
+        "Title 1", "Description 1", image = R.drawable.lolita, listActors = lolitaActors,
+        listDescription = lolitaDescription
+    ),
 )
