@@ -104,3 +104,12 @@ val lolitaActors = listOf(
     MovieActor(R.drawable.lolita_actor5),
     MovieActor(R.drawable.lolita_actor6),
 )
+
+val fearAndDesireActors = listOf(
+    MovieActor(R.drawable.fear_actor1),
+    MovieActor(R.drawable.fear_actor2),
+    MovieActor(R.drawable.fear_actor3),
+    MovieActor(R.drawable.fear_actor4),
+    MovieActor(R.drawable.fear_actor5),
+    MovieActor(R.drawable.fear_actor6),
+)

@@ -92,6 +92,13 @@ val movieList = listOf(
         listDescription = eyesWideShutDescription
     ),
     MovieCard(
+        "Title 1",
+        "Description 1",
+        image = R.drawable.fear_and_desire,
+        listActors = fearAndDesireActors,
+        listDescription = eyesWideShutDescription
+    ),
+    MovieCard(
         "Title 1", "Description 1", image = R.drawable.lolita, listActors = lolitaActors,
         listDescription = lolitaDescription
     ),
