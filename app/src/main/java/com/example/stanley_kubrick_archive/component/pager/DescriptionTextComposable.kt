@@ -1,9 +1,11 @@
 package com.example.stanley_kubrick_archive.component.pager
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -18,7 +20,7 @@ import com.example.stanley_kubrick_archive.data.movieList
     selectedCardValue: Int?,
     pagerState: PagerState
 ) {
-    Text(
+    Text(modifier = Modifier.fillMaxSize(),
         text = if (movieList.isNotEmpty() && movieList[selectedCardValue
                 ?: 0].listDescription.isNotEmpty()
         ) movieList[selectedCardValue
@@ -32,5 +34,5 @@ import com.example.stanley_kubrick_archive.data.movieList
 }
 
 val myCustomFontFamily = FontFamily(
-    Font(R.font.roboto_medium)
+    Font(R.font.roboto_light)
 )

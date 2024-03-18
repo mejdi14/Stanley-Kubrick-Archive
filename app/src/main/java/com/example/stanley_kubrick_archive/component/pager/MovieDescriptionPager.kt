@@ -32,7 +32,7 @@ fun MovieDescriptionPager(pagerState: PagerState, modifier: Modifier, selectedCa
                 .fillMaxSize()
                 .padding(horizontal = 10.dp
                 ),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.TopCenter
         ) {
             DescriptionTextComposable(selectedCardValue, pagerState)
         }

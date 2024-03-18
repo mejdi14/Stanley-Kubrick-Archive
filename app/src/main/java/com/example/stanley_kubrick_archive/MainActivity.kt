@@ -60,6 +60,7 @@ import com.example.stanley_kubrick_archive.ui.theme.StanleyKubrickArchiveTheme
 import kotlin.math.abs
 
 class MainActivity : ComponentActivity() {
+    @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
