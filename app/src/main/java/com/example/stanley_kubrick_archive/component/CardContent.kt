@@ -59,7 +59,7 @@ fun CardContent(item: MovieCard, selectedCard: MutableState<Int?>, pagerState: P
                 }
 
                 1 -> Image(
-                    painter = painterResource(id = item.image),
+                    painter = painterResource(id = item.makingOfImage),
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.FillBounds
