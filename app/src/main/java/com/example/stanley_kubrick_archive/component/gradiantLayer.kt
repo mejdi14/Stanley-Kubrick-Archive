@@ -1,6 +1,5 @@
 package com.example.stanley_kubrick_archive.component
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
