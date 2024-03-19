@@ -1,9 +1,10 @@
 package com.example.stanley_kubrick_archive.component
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,18 +15,13 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.example.stanley_kubrick_archive.R
 import com.example.stanley_kubrick_archive.component.pager.MovieDescriptionPager
 import com.example.stanley_kubrick_archive.component.pager.PagerIndicator
 import com.example.stanley_kubrick_archive.data.MovieCard
@@ -56,7 +52,21 @@ fun MoviesCardsList(items: List<MovieCard>, selectedCard: MutableState<Int?>) {
                 )
             }
         }
-        AnimatedVisibility(visible = selectedCard.value != null) {
+        AnimatedVisibility(
+            visible = selectedCard.value != null,
+            enter = fadeIn(
+                animationSpec = tween(
+                    durationMillis = 500,
+                    delayMillis = 300
+                )
+            ),
+            exit = fadeOut(
+                animationSpec = tween(
+                    durationMillis = 500,
+                    delayMillis = 0
+                ),
+            )
+        ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
