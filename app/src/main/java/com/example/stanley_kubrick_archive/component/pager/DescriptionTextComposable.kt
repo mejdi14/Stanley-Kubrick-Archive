@@ -16,11 +16,12 @@ import com.example.stanley_kubrick_archive.data.movieList
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
- fun DescriptionTextComposable(
+fun DescriptionTextComposable(
     selectedCardValue: Int?,
     pagerState: PagerState
 ) {
-    Text(modifier = Modifier.fillMaxSize(),
+    Text(
+        modifier = Modifier.fillMaxSize(),
         text = if (movieList.isNotEmpty() && movieList[selectedCardValue
                 ?: 0].listDescription.isNotEmpty()
         ) movieList[selectedCardValue
