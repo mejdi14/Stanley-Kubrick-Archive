@@ -23,9 +23,6 @@ import androidx.compose.ui.unit.dp
 fun PagerIndicator(pagerState: PagerState, pageCount: Int, modifier: Modifier = Modifier) {
     Row(modifier = modifier.height(30.dp)) {
         repeat(pageCount) { index ->
-            val size = animateDpAsState(targetValue = if (pagerState.currentPage == index) 14.dp else 10.dp,
-                label = "indicatorAnimation"
-            ).value
             Box(
                 modifier = Modifier
                     .height(8.dp)
