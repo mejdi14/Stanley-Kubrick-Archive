@@ -75,7 +75,7 @@ fun CardContent(
                         painter = painterResource(id = item.makingOfImage),
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.FillBounds
+                        contentScale = ContentScale.Crop
                     )
 
                     2 -> {

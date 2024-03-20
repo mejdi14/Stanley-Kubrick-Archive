@@ -26,7 +26,7 @@ fun MovieDescriptionPager(pagerState: PagerState, modifier: Modifier, selectedCa
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 10.dp
+                .padding(horizontal = 14.dp
                 ),
             contentAlignment = Alignment.TopCenter
         ) {

@@ -35,5 +35,5 @@ fun DescriptionTextComposable(
 }
 
 val myCustomFontFamily = FontFamily(
-    Font(R.font.roboto_light)
+    Font(R.font.open_sans_regular)
 )
