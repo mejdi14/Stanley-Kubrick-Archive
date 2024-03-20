@@ -18,7 +18,9 @@
 ## ✨ Demo
 <p align="center">
 <img src="https://github.com/mejdi14/Lean-Dialog/blob/main/app/images/image.png" height="400" width="550" >
+	[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/DIl8lEsTYTM/0.jpg)](https://www.youtube.com/watch?v=DIl8lEsTYTM)
 	</p>
+ 
 	
 	
 ## :art:Design inspiration
