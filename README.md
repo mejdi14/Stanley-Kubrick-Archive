@@ -25,7 +25,7 @@
 	
 	
 ## :art:Design inspiration
-many thanks goes to [一凡VENBS]([https://dribbble.com/churumovsergey](https://dribbble.com/shots/10753445-3D-Album-Drawer-Framer-js)) for the beautiful design and animation
+many thanks goes to [一凡VENBS](https://dribbble.com/shots/10753445-3D-Album-Drawer-Framer-js) for the beautiful design and inspiration
 
 ## Technologies
 - kotlin
