@@ -18,7 +18,7 @@
 ## ✨ Demo
 <p align="center">
   <a href="https://www.youtube.com/watch?v=DIl8lEsTYTM">
-    <img src="https://img.youtube.com/vi/DIl8lEsTYTM/2.jpg" alt="IMAGE ALT TEXT HERE">
+    <img src="[YOUR_CUSTOM_IMAGE_URL](https://github.com/mejdi14/Stanley-Kubrick-Archive/blob/main/images/stanly_image.jpg)" alt="Custom Thumbnail" width="340" height="640">
   </a>
 </p>
  
