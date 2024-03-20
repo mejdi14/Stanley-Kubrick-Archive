@@ -16,7 +16,11 @@
 </p>
 
 ## ✨ Demo
-	[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/DIl8lEsTYTM/0.jpg)](https://www.youtube.com/watch?v=DIl8lEsTYTM)
+	<p align="center">
+  <a href="https://www.youtube.com/watch?v=DIl8lEsTYTM">
+    <img src="https://img.youtube.com/vi/DIl8lEsTYTM/0.jpg" alt="IMAGE ALT TEXT HERE">
+  </a>
+</p>
  
 	
 	
