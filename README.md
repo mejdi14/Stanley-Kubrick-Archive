@@ -16,9 +16,7 @@
 </p>
 
 ## ✨ Demo
-<p align="center">
 	[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/DIl8lEsTYTM/0.jpg)](https://www.youtube.com/watch?v=DIl8lEsTYTM)
-	</p>
  
 	
 	
