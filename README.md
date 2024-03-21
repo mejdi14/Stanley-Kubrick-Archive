@@ -1,4 +1,4 @@
-<h1 align="center">Stanley Kubrick Archive</h1>
+<h1 align="center">Stanley Kubrick's Archive</h1>
 
 <p align="center">
   <a href="https://github.com/frinyvonnick/gitmoji-changelog">
